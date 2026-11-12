@@ -1,0 +1,34 @@
+{
+  "name": "foodie-admin-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx src/seed.ts",
+    "db:seed:orders": "node scripts/seed-orders.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "@hono/node-server": "^1.0.0",
+    "@neon/realtime": "^0.2.1",
+    "dotenv": "^16.4.0",
+    "drizzle-orm": "^0.30.0",
+    "hono": "^4.0.0",
+    "pg": "^8.11.0",
+    "ws": "^8.16.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/pg": "^8.10.0",
+    "@types/ws": "^8.5.0",
+    "drizzle-kit": "^0.20.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}
