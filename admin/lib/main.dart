@@ -230,6 +230,7 @@ class RestaurantsPage extends StatefulWidget {
 class _RestaurantsPageState extends State<RestaurantsPage> {
   List<Restaurant> _items = [];
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -238,10 +239,12 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() { _loading = true; _error = null; });
     try {
       final data = await widget.api.getList('/restaurants');
       _items = data.map((e) => Restaurant.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (_) {
+      _error = 'No internet connection. Check the API server and try again.';
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -298,6 +301,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_error != null) return _ErrorState(onRetry: _load);
     return _loading
         ? const _SkeletonList()
         : ListView(
@@ -343,6 +347,7 @@ class _MenuPageState extends State<MenuPage> {
   List<MenuItem> _menu = [];
   String? _selected;
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -351,12 +356,14 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() { _loading = true; _error = null; });
     try {
       final data = await widget.api.getList('/restaurants');
       _restaurants = data.map((e) => Restaurant.fromJson(e as Map<String, dynamic>)).toList();
       _selected ??= _restaurants.isEmpty ? null : _restaurants.first.id;
       await _loadMenu();
+    } catch (_) {
+      _error = 'No internet connection. Check the API server and try again.';
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -488,6 +495,7 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_error != null) return _ErrorState(onRetry: _load);
     return _loading
         ? const _SkeletonList()
         : ListView(
@@ -539,6 +547,7 @@ class OrdersPage extends StatefulWidget {
 class _OrdersPageState extends State<OrdersPage> {
   List<Order> _orders = [];
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -547,10 +556,12 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() { _loading = true; _error = null; });
     try {
       final data = await widget.api.getList('/orders');
       _orders = data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (_) {
+      _error = 'No internet connection. Check the API server and try again.';
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -564,6 +575,7 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     const statuses = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered', 'cancelled', 'returned'];
+    if (_error != null) return _ErrorState(onRetry: _load);
     return _loading
         ? const _SkeletonList()
         : ListView(
@@ -605,6 +617,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   List<dynamic> _weekdays = [];
   List<dynamic> _months = [];
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -613,7 +626,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() { _loading = true; _error = null; });
     try {
       final results = await Future.wait([
         widget.api.getMap('/analytics/overview'),
@@ -631,6 +644,8 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       _hours = results[4] as List<dynamic>;
       _weekdays = results[5] as List<dynamic>;
       _months = results[6] as List<dynamic>;
+    } catch (_) {
+      _error = 'No internet connection. Check the API server and try again.';
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -638,6 +653,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_error != null) return _ErrorState(onRetry: _load);
     if (_loading) return const _SkeletonAnalytics();
     final o = _overview!;
     return ListView(
@@ -903,6 +919,37 @@ class _SectionHeader extends StatelessWidget {
       ])),
       if (action != null) action!,
     ]);
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.onRetry});
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 96,
+              height: 96,
+              decoration: const BoxDecoration(color: Color(0xFFFDEBEE), shape: BoxShape.circle),
+              child: const Icon(Icons.wifi_off_rounded, size: 42, color: Color(0xFFC4202F)),
+            ),
+            const SizedBox(height: 20),
+            const Text('No internet connection', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF221A18))),
+            const SizedBox(height: 8),
+            Text('The admin app cannot reach the Foodie API. Make sure the backend is running, then try again.', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, height: 1.5, color: Colors.brown.shade400)),
+            const SizedBox(height: 20),
+            FilledButton.icon(onPressed: onRetry, icon: const Icon(Icons.refresh_rounded), label: const Text('Try again')),
+          ],
+        ),
+      ),
+    );
   }
 }
 
