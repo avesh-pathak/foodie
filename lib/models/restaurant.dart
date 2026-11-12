@@ -19,6 +19,7 @@ class Restaurant {
     required this.menuCategories,
     required this.menu,
     this.isPromoted = false,
+    this.isAvailable = true,
   });
 
   final String id;
@@ -38,6 +39,7 @@ class Restaurant {
   final List<String> menuCategories;
   final List<FoodItem> menu;
   final bool isPromoted;
+  final bool isAvailable;
 
   String get cuisineLabel => cuisines.join(' • ');
 }

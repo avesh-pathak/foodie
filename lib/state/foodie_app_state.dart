@@ -16,7 +16,25 @@ class FoodieAppState extends ChangeNotifier {
     ApiSync.revision.addListener(_onLiveDataChanged);
   }
 
-  void _onLiveDataChanged() => notifyListeners();
+  void _onLiveDataChanged() {
+    _refreshCartAvailability();
+    notifyListeners();
+  }
+
+  void _refreshCartAvailability() {
+    for (int i = 0; i < _cart.length; i++) {
+      final CartItem item = _cart[i];
+      final FoodItem? latest = MockData.dishById(item.food.id);
+      if (latest != null) {
+        _cart[i] = CartItem(
+          food: latest,
+          quantity: item.quantity,
+          addOns: item.addOns,
+          note: item.note,
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -84,6 +102,15 @@ class FoodieAppState extends ChangeNotifier {
   List<CartItem> get cart => List<CartItem>.unmodifiable(_cart);
   bool get isCartEmpty => _cart.isEmpty;
   int get cartCount => _cart.fold<int>(0, (sum, item) => sum + item.quantity);
+  bool get hasUnavailableCartItems =>
+      _cart.any((CartItem item) => !item.food.isAvailable);
+  bool get hasUnavailableItems => hasUnavailableCartItems;
+  bool get cartHasUnavailable => hasUnavailableCartItems;
+  bool get hasSoldOutCartItems => hasUnavailableCartItems;
+  bool get canCheckout => !isCartEmpty && !hasUnavailableCartItems;
+  List<CartItem> get unavailableCartItems =>
+      _cart.where((CartItem item) => !item.food.isAvailable).toList();
+  List<CartItem> get unavailableItems => unavailableCartItems;
 
   List<FoodOrder> get orders => List<FoodOrder>.unmodifiable(_orders);
   List<FoodOrder> get activeOrders {
@@ -325,6 +352,7 @@ class FoodieAppState extends ChangeNotifier {
     String note = '',
   }) {
     if (quantity < 1) return;
+    if (!food.isAvailable) return;
     final CartItem incoming = CartItem(
       food: food,
       quantity: quantity,
@@ -510,6 +538,9 @@ class FoodieAppState extends ChangeNotifier {
   FoodOrder placeOrder() {
     if (_cart.isEmpty) {
       throw StateError('Cannot place an empty order.');
+    }
+    if (hasUnavailableCartItems) {
+      throw StateError('Remove unavailable items before placing the order.');
     }
     final String orderId =
         'FD${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';

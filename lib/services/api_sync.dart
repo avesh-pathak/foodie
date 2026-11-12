@@ -100,6 +100,7 @@ class ApiSync {
         homeCategory: m['homeCategory'] as String?,
         isBestseller: m['isBestseller'] == true,
         isRecommended: m['isRecommended'] == true,
+        isAvailable: m['isAvailable'] != false,
         addOns: (m['addOns'] as List<dynamic>? ?? const <dynamic>[])
             .map((dynamic a) => AddOn(name: '${(a as Map<String, dynamic>)['name']}', price: double.tryParse('${a['price']}') ?? 0))
             .toList(),
@@ -123,6 +124,7 @@ class ApiSync {
       menuCategories: List<String>.from(r['menuCategories'] ?? const <String>[]),
       menu: menu,
       isPromoted: r['isPromoted'] == true,
+      isAvailable: r['isAvailable'] != false,
     );
   }
 }

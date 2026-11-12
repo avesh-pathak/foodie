@@ -23,6 +23,7 @@ class FoodItem {
     this.homeCategory,
     this.isBestseller = false,
     this.isRecommended = false,
+    this.isAvailable = true,
     this.addOns = const <AddOn>[],
   });
 
@@ -39,5 +40,6 @@ class FoodItem {
   final String? homeCategory;
   final bool isBestseller;
   final bool isRecommended;
+  final bool isAvailable;
   final List<AddOn> addOns;
 }
