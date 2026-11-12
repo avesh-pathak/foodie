@@ -78,6 +78,9 @@ skills-lock.json
 idea*.md
 notes*.md
 *.report.md
+Agents.md
+glossary.md
+
 
 # Test / temp
 .testtmp/
