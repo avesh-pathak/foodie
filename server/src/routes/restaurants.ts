@@ -43,7 +43,7 @@ app.post('/', async (c) => {
   const body = await c.req.json();
   const parsed = restaurantSchema.parse(body);
   const id = parsed.id || `r_${Date.now()}`;
-  const [row] = await db.insert(restaurants).values({ ...parsed, id }).returning();
+  const [row] = await db.insert(restaurants).values({ ...parsed, rating: String(parsed.rating), deliveryFee: String(parsed.deliveryFee), distanceKm: String(parsed.distanceKm), id }).returning();
   return c.json(row, 201);
 });
 
@@ -52,7 +52,11 @@ app.put('/:id', async (c) => {
   const id = c.req.param('id');
   const body = await c.req.json();
   const parsed = restaurantSchema.partial().parse(body);
-  const [row] = await db.update(restaurants).set({ ...parsed, updatedAt: new Date() }).where(eq(restaurants.id, id)).returning();
+  const upd: any = { ...parsed, updatedAt: new Date() };
+  if (parsed.rating !== undefined) upd.rating = String(parsed.rating);
+  if (parsed.deliveryFee !== undefined) upd.deliveryFee = String(parsed.deliveryFee);
+  if (parsed.distanceKm !== undefined) upd.distanceKm = String(parsed.distanceKm);
+  const [row] = await db.update(restaurants).set(upd).where(eq(restaurants.id, id)).returning();
   if (!row) return c.json({ error: 'not found' }, 404);
   return c.json(row);
 });

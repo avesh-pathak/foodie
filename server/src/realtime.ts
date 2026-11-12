@@ -39,8 +39,8 @@ export async function startRealtime() {
 
     const tables: Array<[string, string]> = [
       ['restaurants', 'select id, name, updated_at from restaurants'],
-      ['menu_items', 'select id, restaurant_id, price, updated_at from menu_items'],
-      ['orders', 'select id, status, updated_at from orders'],
+      ['menu_items', 'select id, restaurant_id, price, is_available, updated_at from menu_items'],
+      ['orders', 'select id, status, confirmed_at, ready_at, updated_at from orders'],
     ];
 
     for (const [table, query] of tables) {

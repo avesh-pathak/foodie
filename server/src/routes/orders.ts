@@ -3,9 +3,26 @@ import { z } from 'zod';
 import { db } from '../db';
 import { orders, orderItems, orderStatusHistory, dailySummaries, customers } from '../db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { isAdmin } from '../utils/auth';
+import { isAdmin, isKitchen, isStaff, kitchenRestaurantId } from '../utils/auth';
 
 const app = new Hono();
+
+function prepElapsedSeconds(r: any): number | null {
+  const start = r.preparingStartedAt ? new Date(r.preparingStartedAt) : (r.confirmedAt ? new Date(r.confirmedAt) : null);
+  const end = r.readyAt ? new Date(r.readyAt) : null;
+  if (!start) return null;
+  const e = (end ? end.getTime() : Date.now()) - start.getTime();
+  return Math.max(0, Math.floor(e / 1000));
+}
+function prepStatus(r: any): string {
+  if (r.readyAt) return 'ready';
+  if (r.preparingStartedAt) return 'preparing';
+  if (r.confirmedAt) return 'confirmed';
+  return 'pending';
+}
+function withPrep(r: any) {
+  return { ...r, prepElapsedSeconds: prepElapsedSeconds(r), prepStatus: prepStatus(r) };
+}
 
 const orderSchema = z.object({
   id: z.string().optional(),
@@ -67,9 +84,15 @@ async function upsertSummary(order: any, status: string) {
 
 app.get('/', async (c) => {
   const status = c.req.query('status');
+  const restaurantId = c.req.query('restaurantId');
   let rows = await db.select().from(orders);
   if (status) rows = rows.filter((r) => r.status === status);
-  return c.json(rows);
+  if (restaurantId) {
+    const items = await db.select().from(orderItems).where(eq(orderItems.restaurantId, restaurantId));
+    const ids = new Set(items.map((i) => i.orderId));
+    rows = rows.filter((r) => ids.has(r.id));
+  }
+  return c.json(rows.map((r) => withPrep(r)));
 });
 
 app.get('/:id', async (c) => {
@@ -78,7 +101,7 @@ app.get('/:id', async (c) => {
   if (!rows.length) return c.json({ error: 'not found' }, 404);
   const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id));
   const history = await db.select().from(orderStatusHistory).where(eq(orderStatusHistory.orderId, id));
-  return c.json({ ...rows[0], items, history });
+  return c.json({ ...withPrep(rows[0]), items, history });
 });
 
 app.post('/', async (c) => {
@@ -123,14 +146,31 @@ app.post('/', async (c) => {
 });
 
 app.put('/:id/status', async (c) => {
-  if (!isAdmin(c)) return c.json({ error: 'unauthorized' }, 401);
+  if (!isStaff(c)) return c.json({ error: 'unauthorized' }, 401);
   const id = c.req.param('id');
   const body = await c.req.json();
   const status = body.status;
-  const [row] = await db.update(orders).set({ status, updatedAt: new Date() }).where(eq(orders.id, id)).returning();
+  // scope check for kitchen
+  if (isKitchen(c) && !isAdmin(c)) {
+    const rows = await db.select().from(orders).where(eq(orders.id, id));
+    if (!rows.length) return c.json({ error: 'not found' }, 404);
+    const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id));
+    const krid = await kitchenRestaurantId();
+    const belongs = items.some((i) => i.restaurantId === krid);
+    if (!krid || !belongs) return c.json({ error: 'forbidden' }, 403);
+  }
+  const update: any = { status, updatedAt: new Date() };
+  const now = new Date();
+  if (status === 'confirmed') update.confirmedAt = now;
+  if (status === 'preparing') update.preparingStartedAt = now;
+  if (status === 'ready') update.readyAt = now;
+  // rollback: clear later stamps when moving backward
+  if (status === 'confirmed') { update.preparingStartedAt = null; update.readyAt = null; }
+  if (status === 'preparing') { update.readyAt = null; }
+  const [row] = await db.update(orders).set(update).where(eq(orders.id, id)).returning();
   if (!row) return c.json({ error: 'not found' }, 404);
   await db.insert(orderStatusHistory).values({ orderId: id, status });
-  return c.json(row);
+  return c.json(withPrep(row));
 });
 
 export default app;

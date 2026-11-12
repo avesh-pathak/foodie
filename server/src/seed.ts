@@ -2,7 +2,7 @@ import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { db } from './db';
-import { restaurants, menuItems, addOns, foodCategories, coupons, adminUsers } from './db/schema';
+import { restaurants, menuItems, addOns, foodCategories, coupons, adminUsers, kitchenUsers } from './db/schema';
 
 const seedPath = path.resolve(process.cwd(), 'seed', 'mock_data.json');
 const raw = JSON.parse(fs.readFileSync(seedPath, 'utf-8'));
@@ -75,6 +75,11 @@ async function main() {
   }
   // admin user
   await db.insert(adminUsers).values({ id: 'admin', username: 'admin', passwordHash: 'password123' }).onConflictDoNothing();
+  // kitchen user bound to first restaurant
+  const firstRid = raw.restaurants?.[0]?.id;
+  if (firstRid) {
+    await db.insert(kitchenUsers).values({ id: 'kitchen', username: 'kitchen', passwordHash: 'password123', restaurantId: firstRid }).onConflictDoNothing();
+  }
   console.log('Seed complete');
   process.exit(0);
 }
