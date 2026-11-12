@@ -1,6 +1,12 @@
-# Foodie — Restaurant Customer App
+# Foodie — Restaurant Ordering Platform
 
-A complete, polished Flutter restaurant ordering MVP built with Material 3, local state and realistic mock data. No backend, authentication service, payment gateway, maps API, GPS or remote images are required at runtime.
+Three apps, one Neon-backed API:
+
+- **[Customer app](#customer-app)** — browse, order and track (Flutter, repo root).
+- **[Admin app](#admin-app)** — restaurants, menus, prices, orders and analytics (`admin/`).
+- **[Kitchen app](#kitchen-app)** — live order board, prep timers and item availability (`kitchen/`).
+
+A complete, polished Flutter restaurant ordering MVP built with Material 3. The customer app ships with realistic demo data; the admin and kitchen apps read and write the same Neon Postgres database through the Hono API in `server/`.
 
 <table align="center">
   <tr>
@@ -18,6 +24,8 @@ A complete, polished Flutter restaurant ordering MVP built with Material 3, loca
     </td>
   </tr>
 </table>
+
+## Customer app
 
 > **Design direction:** Zomato's identity — white canvas, `#E23744`-family
 > red for every action, near-black ink, green star rating badges and an
