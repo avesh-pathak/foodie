@@ -1,0 +1,832 @@
+{
+  "restaurants": [
+    {
+      "id": "hyderabadi_house",
+      "name": "Hyderabadi House",
+      "tagline": "Slow-cooked dum biryani & royal Mughlai plates",
+      "description": "A neighbourhood favourite for fragrant, slow-cooked biryani. Every handi is sealed with dough, cooked on dum and opened just before it reaches you.",
+      "coverImage": "assets/images/cover_hyderabadi.jpg",
+      "rating": 4.6,
+      "ratingCount": 2840,
+      "cuisines": [
+        "Biryani",
+        "Mughlai",
+        "North Indian"
+      ],
+      "deliveryMinutes": 32,
+      "deliveryFee": 29.0,
+      "priceForTwo": 450,
+      "distanceKm": 2.4,
+      "categories": [
+        "biryani"
+      ],
+      "offer": "50% OFF up to ₹120",
+      "menuCategories": [
+        "Biryani",
+        "Curries",
+        "Desserts",
+        "Beverages"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_chicken_biryani",
+          "restaurantId": "hyderabadi_house",
+          "name": "Hyderabadi Chicken Dum Biryani",
+          "description": "Long-grain basmati, saffron, tender chicken and fried onions. Served with raita and mirchi ka salan.",
+          "price": 329.0,
+          "image": "assets/images/dish_biryani.jpg",
+          "rating": 4.8,
+          "ratingCount": 2314,
+          "isVeg": false,
+          "category": "Biryani",
+          "homeCategory": "biryani",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Extra raita",
+              "price": 29.0
+            },
+            {
+              "name": "Extra mirchi ka salan",
+              "price": 39.0
+            },
+            {
+              "name": "Make it boneless",
+              "price": 60.0
+            }
+          ]
+        },
+        {
+          "id": "f_paneer_butter_masala",
+          "restaurantId": "hyderabadi_house",
+          "name": "Paneer Butter Masala",
+          "description": "Velvety tomato-cashew gravy, charred paneer and a swirl of cream. Perfect with butter naan.",
+          "price": 289.0,
+          "image": "assets/images/dish_paneer.jpg",
+          "rating": 4.6,
+          "ratingCount": 1082,
+          "isVeg": true,
+          "category": "Curries",
+          "homeCategory": null,
+          "isBestseller": false,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Butter naan",
+              "price": 49.0
+            },
+            {
+              "name": "Extra creamy",
+              "price": 30.0
+            }
+          ]
+        },
+        {
+          "id": "f_andhra_chicken",
+          "restaurantId": "hyderabadi_house",
+          "name": "Andhra Chicken Curry",
+          "description": "Fiery, slow-simmered chicken curry with curry leaves, black pepper and a bold ghee finish.",
+          "price": 319.0,
+          "image": "assets/images/dish_andhra_curry.jpg",
+          "rating": 4.5,
+          "ratingCount": 674,
+          "isVeg": false,
+          "category": "Curries",
+          "homeCategory": null,
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_gulab_jamun",
+          "restaurantId": "hyderabadi_house",
+          "name": "Warm Gulab Jamun",
+          "description": "Soft milk dumplings soaked in cardamom-scented syrup. Two pieces, served warm.",
+          "price": 119.0,
+          "image": "assets/images/dish_gulab_jamun.jpg",
+          "rating": 4.7,
+          "ratingCount": 912,
+          "isVeg": true,
+          "category": "Desserts",
+          "homeCategory": "desserts",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": [
+            {
+              "name": "Extra rabri",
+              "price": 25.0
+            }
+          ]
+        },
+        {
+          "id": "f_masala_chai",
+          "restaurantId": "hyderabadi_house",
+          "name": "Kadak Masala Chai",
+          "description": "Assam tea brewed with ginger, cardamom and cloves. Comfort in a cup.",
+          "price": 79.0,
+          "image": "assets/images/dish_chai.jpg",
+          "rating": 4.6,
+          "ratingCount": 520,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": [
+            {
+              "name": "Extra ginger",
+              "price": 10.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "napoli_pizzeria",
+      "name": "Napoli Pizzeria",
+      "tagline": "Wood-fired sourdough pizza, Naples style",
+      "description": "Naturally leavened dough, San Marzano tomatoes and mozzarella pulled fresh every morning. Baked at 450°C for that perfect leopard-spotted crust.",
+      "coverImage": "assets/images/cover_napoli.jpg",
+      "rating": 4.5,
+      "ratingCount": 1986,
+      "cuisines": [
+        "Italian",
+        "Pizza",
+        "Pasta"
+      ],
+      "deliveryMinutes": 28,
+      "deliveryFee": 39.0,
+      "priceForTwo": 600,
+      "distanceKm": 3.1,
+      "categories": [
+        "pizza"
+      ],
+      "offer": "Buy 1 Get 1 on medium pizzas",
+      "menuCategories": [
+        "Pizza",
+        "Desserts",
+        "Beverages"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_margherita",
+          "restaurantId": "napoli_pizzeria",
+          "name": "Classic Margherita",
+          "description": "San Marzano tomato, fior di latte mozzarella, fresh basil and a drizzle of olive oil.",
+          "price": 299.0,
+          "image": "assets/images/dish_margherita.jpg",
+          "rating": 4.7,
+          "ratingCount": 1440,
+          "isVeg": true,
+          "category": "Pizza",
+          "homeCategory": "pizza",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Extra mozzarella",
+              "price": 49.0
+            },
+            {
+              "name": "Jalapeños",
+              "price": 29.0
+            },
+            {
+              "name": "Garlic dip",
+              "price": 20.0
+            }
+          ]
+        },
+        {
+          "id": "f_farmhouse_pizza",
+          "restaurantId": "napoli_pizzeria",
+          "name": "Farmhouse Pizza",
+          "description": "Bell peppers, sweet corn, red onion, mushrooms and generous mozzarella on tomato base.",
+          "price": 449.0,
+          "image": "assets/images/dish_farmhouse.jpg",
+          "rating": 4.6,
+          "ratingCount": 826,
+          "isVeg": true,
+          "category": "Pizza",
+          "homeCategory": "pizza",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": [
+            {
+              "name": "Extra cheese",
+              "price": 49.0
+            },
+            {
+              "name": "Peri peri sprinkle",
+              "price": 15.0
+            }
+          ]
+        },
+        {
+          "id": "f_tandoori_paneer_pizza",
+          "restaurantId": "napoli_pizzeria",
+          "name": "Tandoori Paneer Pizza",
+          "description": "Smoky tandoori paneer, red onion, mint drizzle and a warm garam masala finish.",
+          "price": 499.0,
+          "image": "assets/images/dish_tandoori_paneer.jpg",
+          "rating": 4.5,
+          "ratingCount": 611,
+          "isVeg": true,
+          "category": "Pizza",
+          "homeCategory": "pizza",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_tiramisu",
+          "restaurantId": "napoli_pizzeria",
+          "name": "Espresso Tiramisu",
+          "description": "Mascarpone, espresso-soaked ladyfingers and a dusting of dark cocoa.",
+          "price": 249.0,
+          "image": "assets/images/dish_tiramisu.jpg",
+          "rating": 4.8,
+          "ratingCount": 356,
+          "isVeg": true,
+          "category": "Desserts",
+          "homeCategory": "desserts",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_cold_coffee",
+          "restaurantId": "napoli_pizzeria",
+          "name": "Italian Cold Coffee",
+          "description": "Double espresso, cold milk and a soft cocoa foam. Lightly sweetened.",
+          "price": 149.0,
+          "image": "assets/images/dish_cold_coffee.jpg",
+          "rating": 4.4,
+          "ratingCount": 284,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        }
+      ]
+    },
+    {
+      "id": "burger_barn",
+      "name": "Burger Barn",
+      "tagline": "Smashed patties, toasted brioche & big flavours",
+      "description": "A tiny burger joint with a big grill. We smash our patties thin for crisp edges, stack them in buttery brioche and never skip the house sauce.",
+      "coverImage": "assets/images/cover_burger.jpg",
+      "rating": 4.4,
+      "ratingCount": 1560,
+      "cuisines": [
+        "American",
+        "Burgers",
+        "Fast Food"
+      ],
+      "deliveryMinutes": 24,
+      "deliveryFee": 29.0,
+      "priceForTwo": 400,
+      "distanceKm": 1.8,
+      "categories": [
+        "burgers"
+      ],
+      "offer": "Free peri-peri fries above ₹499",
+      "menuCategories": [
+        "Burgers",
+        "Beverages"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_classic_cheeseburger",
+          "restaurantId": "burger_barn",
+          "name": "Classic Cheeseburger",
+          "description": "Double smashed patty, aged cheddar, pickles, onion and Burger Barn special sauce.",
+          "price": 249.0,
+          "image": "assets/images/dish_cheeseburger.jpg",
+          "rating": 4.6,
+          "ratingCount": 1208,
+          "isVeg": false,
+          "category": "Burgers",
+          "homeCategory": "burgers",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Extra cheese slice",
+              "price": 40.0
+            },
+            {
+              "name": "Smoked bacon",
+              "price": 70.0
+            },
+            {
+              "name": "Peri-peri fries",
+              "price": 69.0
+            }
+          ]
+        },
+        {
+          "id": "f_bbq_burger",
+          "restaurantId": "burger_barn",
+          "name": "Smoky BBQ Burger",
+          "description": "Charred beef patty, crispy onions, smoked cheddar and a sticky bourbon BBQ glaze.",
+          "price": 299.0,
+          "image": "assets/images/dish_bbq_burger.jpg",
+          "rating": 4.5,
+          "ratingCount": 742,
+          "isVeg": false,
+          "category": "Burgers",
+          "homeCategory": "burgers",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": [
+            {
+              "name": "Extra patty",
+              "price": 90.0
+            },
+            {
+              "name": "Jalapeños",
+              "price": 25.0
+            }
+          ]
+        },
+        {
+          "id": "f_crispy_chicken_burger",
+          "restaurantId": "burger_barn",
+          "name": "Crispy Chicken Burger",
+          "description": "Buttermilk-fried chicken thigh, crunchy slaw, pickles and honey-mustard mayo.",
+          "price": 279.0,
+          "image": "assets/images/dish_crispy_burger.jpg",
+          "rating": 4.5,
+          "ratingCount": 690,
+          "isVeg": false,
+          "category": "Burgers",
+          "homeCategory": "burgers",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_burger_lime_soda",
+          "restaurantId": "burger_barn",
+          "name": "Fresh Lime Soda",
+          "description": "Fresh lime, chilled soda and a pinch of black salt. Sweet or salted.",
+          "price": 99.0,
+          "image": "assets/images/dish_lime_soda.jpg",
+          "rating": 4.3,
+          "ratingCount": 258,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_burger_cold_coffee",
+          "restaurantId": "burger_barn",
+          "name": "Cold Coffee Shake",
+          "description": "Cold brew blended with vanilla ice cream and a chocolate drizzle.",
+          "price": 139.0,
+          "image": "assets/images/dish_cold_coffee.jpg",
+          "rating": 4.4,
+          "ratingCount": 301,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        }
+      ]
+    },
+    {
+      "id": "wok_and_roll",
+      "name": "Wok & Roll",
+      "tagline": "Wok-tossed noodles, momos & midnight cravings",
+      "description": "High flame, strong flavours and plenty of chilli. Our noodles are tossed to order and our momos are pleated by hand every morning.",
+      "coverImage": "assets/images/cover_wok.jpg",
+      "rating": 4.3,
+      "ratingCount": 1248,
+      "cuisines": [
+        "Chinese",
+        "Asian",
+        "Momos"
+      ],
+      "deliveryMinutes": 35,
+      "deliveryFee": 39.0,
+      "priceForTwo": 500,
+      "distanceKm": 4.2,
+      "categories": [
+        "chinese"
+      ],
+      "offer": "20% OFF on orders above ₹349",
+      "menuCategories": [
+        "Momos",
+        "Noodles & Rice",
+        "Starters"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_veg_momos",
+          "restaurantId": "wok_and_roll",
+          "name": "Steamed Veg Momos",
+          "description": "Eight hand-pleated momos packed with cabbage, carrot and spring onion. Served with chilli chutney.",
+          "price": 179.0,
+          "image": "assets/images/dish_momos.jpg",
+          "rating": 4.7,
+          "ratingCount": 1104,
+          "isVeg": true,
+          "category": "Momos",
+          "homeCategory": "chinese",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Extra chilli chutney",
+              "price": 20.0
+            },
+            {
+              "name": "Schezwan drizzle",
+              "price": 30.0
+            }
+          ]
+        },
+        {
+          "id": "f_chilli_garlic_noodles",
+          "restaurantId": "wok_and_roll",
+          "name": "Chilli Garlic Noodles",
+          "description": "Springy hakka noodles tossed with garlic, dried red chilli, soy and crunchy vegetables.",
+          "price": 239.0,
+          "image": "assets/images/dish_noodles.jpg",
+          "rating": 4.5,
+          "ratingCount": 884,
+          "isVeg": true,
+          "category": "Noodles & Rice",
+          "homeCategory": "chinese",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": [
+            {
+              "name": "Add egg",
+              "price": 35.0
+            },
+            {
+              "name": "Extra spicy",
+              "price": 0.0
+            }
+          ]
+        },
+        {
+          "id": "f_schezwan_fried_rice",
+          "restaurantId": "wok_and_roll",
+          "name": "Schezwan Fried Rice",
+          "description": "Wok-charred rice, crunchy greens and a punchy house-made schezwan sauce.",
+          "price": 229.0,
+          "image": "assets/images/dish_fried_rice.jpg",
+          "rating": 4.4,
+          "ratingCount": 620,
+          "isVeg": true,
+          "category": "Noodles & Rice",
+          "homeCategory": "chinese",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_spring_rolls",
+          "restaurantId": "wok_and_roll",
+          "name": "Crispy Spring Rolls",
+          "description": "Golden, flaky rolls stuffed with julienned vegetables. Four pieces with sweet chilli dip.",
+          "price": 199.0,
+          "image": "assets/images/dish_spring_rolls.jpg",
+          "rating": 4.3,
+          "ratingCount": 412,
+          "isVeg": true,
+          "category": "Starters",
+          "homeCategory": "chinese",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        }
+      ]
+    },
+    {
+      "id": "dosa_junction",
+      "name": "Dosa Junction",
+      "tagline": "Crispy dosas, filter coffee & a little nostalgia",
+      "description": "A modern take on the neighbourhood tiffin room. Stone-ground batter, house podi and coffee that is still poured the old-fashioned way.",
+      "coverImage": "assets/images/cover_dosa.jpg",
+      "rating": 4.7,
+      "ratingCount": 2104,
+      "cuisines": [
+        "South Indian",
+        "Breakfast",
+        "Tiffin"
+      ],
+      "deliveryMinutes": 22,
+      "deliveryFee": 19.0,
+      "priceForTwo": 250,
+      "distanceKm": 1.2,
+      "categories": [
+        "south-indian"
+      ],
+      "offer": "Free filter coffee above ₹299",
+      "menuCategories": [
+        "Dosas",
+        "Tiffin",
+        "Beverages"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_masala_dosa",
+          "restaurantId": "dosa_junction",
+          "name": "Ghee Roast Masala Dosa",
+          "description": "Extra-crisp dosa roasted in ghee, filled with spiced potato masala. Served with sambar and two chutneys.",
+          "price": 189.0,
+          "image": "assets/images/dish_dosa.jpg",
+          "rating": 4.8,
+          "ratingCount": 1802,
+          "isVeg": true,
+          "category": "Dosas",
+          "homeCategory": "south-indian",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Extra podi",
+              "price": 20.0
+            },
+            {
+              "name": "Extra chutney",
+              "price": 25.0
+            }
+          ]
+        },
+        {
+          "id": "f_idli_sambar",
+          "restaurantId": "dosa_junction",
+          "name": "Idli Sambar",
+          "description": "Three pillowy steamed idlis with lentil sambar, coconut chutney and a spoon of ghee.",
+          "price": 129.0,
+          "image": "assets/images/dish_idli.jpg",
+          "rating": 4.6,
+          "ratingCount": 720,
+          "isVeg": true,
+          "category": "Tiffin",
+          "homeCategory": "south-indian",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_medu_vada",
+          "restaurantId": "dosa_junction",
+          "name": "Medu Vada",
+          "description": "Crisp outside, soft inside. Two urad dal vadas with sambar and chutney.",
+          "price": 149.0,
+          "image": "assets/images/dish_vada.jpg",
+          "rating": 4.5,
+          "ratingCount": 534,
+          "isVeg": true,
+          "category": "Tiffin",
+          "homeCategory": "south-indian",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_filter_coffee",
+          "restaurantId": "dosa_junction",
+          "name": "Filter Coffee",
+          "description": "Strong South Indian decoction, hot milk and just the right amount of sugar.",
+          "price": 69.0,
+          "image": "assets/images/dish_filter_coffee.jpg",
+          "rating": 4.7,
+          "ratingCount": 912,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        }
+      ]
+    },
+    {
+      "id": "sweet_tooth",
+      "name": "Sweet Tooth",
+      "tagline": "Small-batch cakes, kulfi & happy endings",
+      "description": "A tiny bakery with a serious sweet tooth. Everything is baked in small batches, and the kulfi is churned slowly with real mango.",
+      "coverImage": "assets/images/cover_sweet.jpg",
+      "rating": 4.8,
+      "ratingCount": 1732,
+      "cuisines": [
+        "Desserts",
+        "Bakery",
+        "Beverages"
+      ],
+      "deliveryMinutes": 20,
+      "deliveryFee": 29.0,
+      "priceForTwo": 350,
+      "distanceKm": 1.6,
+      "categories": [
+        "desserts"
+      ],
+      "offer": "Flat ₹50 off above ₹399",
+      "menuCategories": [
+        "Cakes",
+        "Frozen",
+        "Beverages"
+      ],
+      "isPromoted": false,
+      "menu": [
+        {
+          "id": "f_chocolate_cake",
+          "restaurantId": "sweet_tooth",
+          "name": "Molten Chocolate Cake",
+          "description": "Warm dark-chocolate cake with a gooey centre. Best enjoyed with vanilla ice cream.",
+          "price": 219.0,
+          "image": "assets/images/dish_chocolate_cake.jpg",
+          "rating": 4.9,
+          "ratingCount": 1402,
+          "isVeg": true,
+          "category": "Cakes",
+          "homeCategory": "desserts",
+          "isBestseller": true,
+          "isRecommended": true,
+          "addOns": [
+            {
+              "name": "Vanilla ice cream",
+              "price": 50.0
+            },
+            {
+              "name": "Extra chocolate sauce",
+              "price": 30.0
+            }
+          ]
+        },
+        {
+          "id": "f_cupcakes",
+          "restaurantId": "sweet_tooth",
+          "name": "Blueberry Cupcakes",
+          "description": "Two soft vanilla cupcakes folded with blueberries and topped with cream-cheese frosting.",
+          "price": 179.0,
+          "image": "assets/images/dish_cupcakes.jpg",
+          "rating": 4.6,
+          "ratingCount": 388,
+          "isVeg": true,
+          "category": "Cakes",
+          "homeCategory": "desserts",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_mango_kulfi",
+          "restaurantId": "sweet_tooth",
+          "name": "Mango Kulfi",
+          "description": "Slow-churned kulfi with Alphonso mango, pistachio and a hint of cardamom.",
+          "price": 149.0,
+          "image": "assets/images/dish_kulfi.jpg",
+          "rating": 4.8,
+          "ratingCount": 764,
+          "isVeg": true,
+          "category": "Frozen",
+          "homeCategory": "desserts",
+          "isBestseller": false,
+          "isRecommended": true,
+          "addOns": []
+        },
+        {
+          "id": "f_lime_soda",
+          "restaurantId": "sweet_tooth",
+          "name": "Fresh Lime Soda",
+          "description": "Zesty lime, fizzy soda and a pinch of black salt. Sweet or salted.",
+          "price": 99.0,
+          "image": "assets/images/dish_lime_soda.jpg",
+          "rating": 4.4,
+          "ratingCount": 188,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        },
+        {
+          "id": "f_berry_mocktail",
+          "restaurantId": "sweet_tooth",
+          "name": "Berry Mocktail",
+          "description": "Muddled berries, mint, lime and tonic. Bright, bubbly and completely alcohol-free.",
+          "price": 169.0,
+          "image": "assets/images/dish_mocktail.jpg",
+          "rating": 4.5,
+          "ratingCount": 241,
+          "isVeg": true,
+          "category": "Beverages",
+          "homeCategory": "beverages",
+          "isBestseller": false,
+          "isRecommended": false,
+          "addOns": []
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "all",
+      "label": "All",
+      "color": 4291043375,
+      "softColor": 4294831086
+    },
+    {
+      "id": "biryani",
+      "label": "Biryani",
+      "color": 4289218591,
+      "softColor": 4294961112
+    },
+    {
+      "id": "pizza",
+      "label": "Pizza",
+      "color": 4289739334,
+      "softColor": 4294698216
+    },
+    {
+      "id": "burgers",
+      "label": "Burgers",
+      "color": 4288307718,
+      "softColor": 4294963407
+    },
+    {
+      "id": "chinese",
+      "label": "Chinese",
+      "color": 4281232988,
+      "softColor": 4293194734
+    },
+    {
+      "id": "south-indian",
+      "label": "South Indian",
+      "color": 4283855391,
+      "softColor": 4293915617
+    },
+    {
+      "id": "desserts",
+      "label": "Desserts",
+      "color": 4287512928,
+      "softColor": 4294699247
+    },
+    {
+      "id": "beverages",
+      "label": "Beverages",
+      "color": 4282342547,
+      "softColor": 4293455609
+    }
+  ],
+  "coupons": [
+    {
+      "code": "FOODIE50",
+      "title": "Flat 50% off",
+      "description": "50% off your order, up to ₹150.",
+      "kind": "percent",
+      "value": 50.0,
+      "minOrder": 399.0,
+      "maxDiscount": 150.0
+    },
+    {
+      "code": "WELCOME100",
+      "title": "₹100 off",
+      "description": "A little welcome treat on orders above ₹499.",
+      "kind": "flat",
+      "value": 100.0,
+      "minOrder": 499.0,
+      "maxDiscount": null
+    },
+    {
+      "code": "FREEDEL",
+      "title": "Free delivery",
+      "description": "We will take care of the delivery fee.",
+      "kind": "freeDelivery",
+      "value": 0.0,
+      "minOrder": 199.0,
+      "maxDiscount": null
+    },
+    {
+      "code": "SWEET20",
+      "title": "20% off desserts",
+      "description": "20% off up to ₹80 on orders above ₹249.",
+      "kind": "percent",
+      "value": 20.0,
+      "minOrder": 249.0,
+      "maxDiscount": 80.0
+    }
+  ]
+}
