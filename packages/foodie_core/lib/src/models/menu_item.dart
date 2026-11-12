@@ -12,6 +12,7 @@ class MenuItem {
   final String? homeCategory;
   final bool isBestseller;
   final bool isRecommended;
+  final bool isAvailable;
   final List<AddOn> addOns;
 
   MenuItem({
@@ -28,6 +29,7 @@ class MenuItem {
     this.homeCategory,
     this.isBestseller = false,
     this.isRecommended = false,
+    this.isAvailable = true,
     this.addOns = const [],
   });
 
@@ -45,6 +47,7 @@ class MenuItem {
         homeCategory: j['homeCategory'],
         isBestseller: j['isBestseller'] ?? false,
         isRecommended: j['isRecommended'] ?? false,
+        isAvailable: j['isAvailable'] ?? true,
         addOns: (j['addOns'] as List?)?.map((e) => AddOn.fromJson(e as Map<String, dynamic>)).toList() ?? [],
       );
 
@@ -62,6 +65,7 @@ class MenuItem {
         'homeCategory': homeCategory,
         'isBestseller': isBestseller,
         'isRecommended': isRecommended,
+        'isAvailable': isAvailable,
         'addOns': addOns.map((e) => e.toJson()).toList(),
       };
 }

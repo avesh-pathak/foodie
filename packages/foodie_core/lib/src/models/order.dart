@@ -6,6 +6,11 @@ class Order {
   final double total;
   final String paymentMethod;
   final DateTime? createdAt;
+  final DateTime? confirmedAt;
+  final DateTime? preparingStartedAt;
+  final DateTime? readyAt;
+  final int? prepElapsedSeconds;
+  final String? prepStatus;
 
   Order({
     required this.id,
@@ -15,6 +20,11 @@ class Order {
     required this.total,
     this.paymentMethod = '',
     this.createdAt,
+    this.confirmedAt,
+    this.preparingStartedAt,
+    this.readyAt,
+    this.prepElapsedSeconds,
+    this.prepStatus,
   });
 
   factory Order.fromJson(Map<String, dynamic> j) => Order(
@@ -25,6 +35,11 @@ class Order {
         total: double.tryParse('${j['total']}') ?? 0,
         paymentMethod: j['paymentMethod'] ?? '',
         createdAt: j['createdAt'] != null ? DateTime.tryParse('${j['createdAt']}') : null,
+        confirmedAt: j['confirmedAt'] != null ? DateTime.tryParse('${j['confirmedAt']}') : null,
+        preparingStartedAt: j['preparingStartedAt'] != null ? DateTime.tryParse('${j['preparingStartedAt']}') : null,
+        readyAt: j['readyAt'] != null ? DateTime.tryParse('${j['readyAt']}') : null,
+        prepElapsedSeconds: (j['prepElapsedSeconds'] as num?)?.toInt(),
+        prepStatus: j['prepStatus'] as String?,
       );
 }
 

@@ -5,6 +5,8 @@ class ApiClient {
   ApiClient({required this.baseUrl, this.token});
   final String baseUrl;
   String? token;
+  String? role;
+  String? restaurantId;
 
   Map<String, String> get _headers => {
         'Content-Type': 'application/json',
@@ -45,6 +47,19 @@ class ApiClient {
     if (res.statusCode != 200) throw Exception('login failed');
     final data = jsonDecode(res.body) as Map<String, dynamic>;
     token = data['token'] as String;
+    try {
+      final me = await this.me();
+      role = me['role'] as String?;
+      restaurantId = me['restaurantId'] as String?;
+    } catch (_) {
+      // /auth/me may be unavailable; keep token-only session.
+    }
     return data;
+  }
+
+  Future<Map<String, dynamic>> me() async {
+    final res = await http.get(Uri.parse('$baseUrl/auth/me'), headers: _headers);
+    if (res.statusCode != 200) throw Exception('GET /auth/me failed: ${res.statusCode}');
+    return jsonDecode(res.body) as Map<String, dynamic>;
   }
 }
