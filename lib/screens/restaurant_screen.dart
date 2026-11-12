@@ -792,6 +792,31 @@ class _MenuDishTile extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (!item.isAvailable)
+                    Positioned(
+                      bottom: 5,
+                      right: 5,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.foodie.danger,
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                        ),
+                        child: const Text(
+                          'Sold out',
+                          style: TextStyle(
+                            fontFamily: FoodieType.bodyFamily,
+                            fontSize: 6.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.4,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(width: 12),
@@ -852,14 +877,35 @@ class _MenuDishTile extends StatelessWidget {
                             fontSize: 14.5,
                           ),
                         );
-                        final Widget action = quantity > 0
-                            ? QuantityStepper(
-                                quantity: quantity,
-                                onIncrement: onIncrement,
-                                onDecrement: onDecrement,
-                                compact: true,
+                        final Widget action = !item.isAvailable
+                            ? Container(
+                                height: 36,
+                                constraints: const BoxConstraints(minWidth: 72),
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: context.foodie.surfaceMuted,
+                                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                                  border: Border.all(color: context.foodie.border),
+                                ),
+                                child: Text(
+                                  'Sold out',
+                                  style: context.foodieType.label.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.4,
+                                    color: context.foodie.subtle,
+                                  ),
+                                ),
                               )
-                            : OutlineAddButton(onTap: onAdd);
+                            : quantity > 0
+                                ? QuantityStepper(
+                                    quantity: quantity,
+                                    onIncrement: onIncrement,
+                                    onDecrement: onDecrement,
+                                    compact: true,
+                                  )
+                                : OutlineAddButton(onTap: onAdd);
                         if (constraints.maxWidth < 168) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

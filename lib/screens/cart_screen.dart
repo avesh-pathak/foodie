@@ -169,6 +169,36 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
+                      if (state.hasUnavailableCartItems)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: context.foodie.dangerSoft,
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            border: Border.all(color: context.foodie.danger),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.info_outline_rounded,
+                                color: context.foodie.dangerInk,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Some items in your cart are sold out. Remove them to continue.',
+                                  style: context.foodieType.body.copyWith(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.foodie.dangerInk,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
@@ -445,7 +475,7 @@ class _CartScreenState extends State<CartScreen> {
                     final Widget checkoutButton = SizedBox(
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: _openCheckout,
+                        onPressed: state.hasUnavailableCartItems ? null : _openCheckout,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: context.foodie.primary,
                           foregroundColor: context.foodie.onPrimary,
@@ -576,6 +606,29 @@ class _CartLineTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: context.foodieType.small.copyWith(fontSize: 9.5),
+                    ),
+                  ),
+                if (!item.food.isAvailable)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.foodie.dangerSoft,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        border: Border.all(color: context.foodie.danger),
+                      ),
+                      child: Text(
+                        'Sold out',
+                        style: context.foodieType.small.copyWith(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
+                          color: context.foodie.dangerInk,
+                        ),
+                      ),
                     ),
                   ),
                 const SizedBox(height: 8),

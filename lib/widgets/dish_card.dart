@@ -95,6 +95,31 @@ class DishCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                    if (!item.isAvailable)
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.foodie.danger,
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                          ),
+                          child: const Text(
+                            'Sold out',
+                            style: TextStyle(
+                              fontFamily: 'PlusJakartaSans',
+                              fontSize: 7.8,
+                              letterSpacing: 0.7,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     Positioned(
                       left: 10,
                       bottom: 8,
@@ -155,10 +180,12 @@ class DishCard extends StatelessWidget {
                           SizedBox(
                             height: 32,
                             child: ElevatedButton(
-                              onPressed: onAdd,
+                              onPressed: item.isAvailable ? onAdd : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: context.foodie.primary,
                                 foregroundColor: context.foodie.onPrimary,
+                                disabledBackgroundColor: context.foodie.surfaceMuted,
+                                disabledForegroundColor: context.foodie.subtle,
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 15),
                                 minimumSize: const Size(54, 32),
@@ -167,9 +194,9 @@ class DishCard extends StatelessWidget {
                                       BorderRadius.circular(AppRadius.sm),
                                 ),
                               ),
-                              child: const Text(
-                                'ADD',
-                                style: TextStyle(
+                              child: Text(
+                                item.isAvailable ? 'ADD' : 'Sold out',
+                                style: const TextStyle(
                                   fontFamily: 'PlusJakartaSans',
                                   fontSize: 11,
                                   fontWeight: FontWeight.w800,
@@ -275,6 +302,31 @@ class DishListTile extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (!item.isAvailable)
+                    Positioned(
+                      left: 5,
+                      bottom: 5,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.foodie.danger,
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                        ),
+                        child: const Text(
+                          'Sold out',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 6.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(width: 13),
@@ -338,6 +390,27 @@ class DishListTile extends StatelessWidget {
                         const Spacer(),
                         if (!showAddButton)
                           const SizedBox.shrink()
+                        else if (!item.isAvailable)
+                          Container(
+                            height: 36,
+                            constraints: const BoxConstraints(minWidth: 72),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: context.foodie.surfaceMuted,
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
+                              border: Border.all(color: context.foodie.border),
+                            ),
+                            child: Text(
+                              'Sold out',
+                              style: context.foodieType.label.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.4,
+                                color: context.foodie.subtle,
+                              ),
+                            ),
+                          )
                         else if (quantity > 0)
                           QuantityStepper(
                             quantity: quantity,

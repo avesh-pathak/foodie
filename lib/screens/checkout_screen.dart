@@ -253,6 +253,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 const SizedBox(height: 18),
+                if (state.hasUnavailableCartItems)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: context.foodie.dangerSoft,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      border: Border.all(color: context.foodie.danger),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: context.foodie.dangerInk,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Some items are sold out. Remove them from your cart to place the order.',
+                            style: context.foodieType.body.copyWith(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: context.foodie.dangerInk,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 Row(
                   children: <Widget>[
                     Expanded(
@@ -488,7 +518,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 width: buttonWidth,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _placingOrder ? null : () => _placeOrder(state),
+                  onPressed: (_placingOrder || state.hasUnavailableCartItems)
+                      ? null
+                      : () => _placeOrder(state),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.foodie.primary,
                     foregroundColor: context.foodie.onPrimary,

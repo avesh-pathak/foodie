@@ -259,11 +259,13 @@ class _ItemCustomizationSheetState extends State<ItemCustomizationSheet> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: _addToCart,
+                onPressed: widget.item.isAvailable ? _addToCart : null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('Add $_quantity to cart'),
+                    Text(widget.item.isAvailable
+                        ? 'Add $_quantity to cart'
+                        : 'Sold out'),
                     Text(currency(_total)),
                   ],
                 ),
