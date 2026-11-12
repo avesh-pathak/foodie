@@ -1,0 +1,47 @@
+name: foodie
+description: "Foodie — a premium restaurant customer app built with Flutter and local demo data."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.14.0 <4.0.0"
+  flutter: ">=3.50.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans-ExtraBold.ttf
+          weight: 800
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fraunces-Bold.ttf
+          weight: 700
+
+dependency_overrides:
+  material_color_utilities: ^0.13.1
+  test_api: ^0.7.15
