@@ -46,6 +46,77 @@ A complete, polished Flutter restaurant ordering MVP built with Material 3, loca
 
 All activity is in memory and resets whenever the app restarts.
 
+## Admin app
+
+A separate Flutter admin app lives in `admin/` and talks to the Neon-backed
+Hono API in `server/`. It is intentionally separate from the customer app.
+
+- Sign in with `admin` / `password123` (demo only).
+- Manage restaurants, menus, prices, and dish photos.
+- Upload photos through the API to Neon Object Storage (with a relay fallback
+  for networks that cannot resolve the storage host).
+- Review orders and change status.
+- View analytics: revenue, orders, AOV, returns, peak hours, weekdays, monthly
+  revenue, restaurant revenue, and orders by area.
+- Admin writes publish through Neon Realtime; the API streams changes to the
+  customer app over SSE.
+
+<table align="center">
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-login.png" width="230" alt="Foodie Admin login screen with logo and demo credentials" />
+      <br /><sub><b>Admin login</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-restaurants.png" width="230" alt="Foodie Admin restaurant list with photos and add action" />
+      <br /><sub><b>Restaurants</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-menu.png" width="230" alt="Foodie Admin menu and price editor with dish thumbnails" />
+      <br /><sub><b>Menu &amp; prices</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-edit-menu.png" width="230" alt="Foodie Admin edit menu item dialog with price, category, description and photo preview" />
+      <br /><sub><b>Edit menu item</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-orders.png" width="230" alt="Foodie Admin orders list with status controls" />
+      <br /><sub><b>Orders</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/admin-analytics.png" width="230" alt="Foodie Admin analytics dashboard with revenue, orders, AOV and returns" />
+      <br /><sub><b>Analytics</b></sub>
+    </td>
+  </tr>
+</table>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/admin-analytics-charts.png" width="300" alt="Foodie Admin analytics charts including orders by area and top restaurants" />
+      <br /><sub><b>Charts</b></sub>
+    </td>
+  </tr>
+</table>
+
+### Run the admin app
+
+```bash
+# API
+cd server
+npm install
+npm run db:seed
+npm run db:seed:orders
+npm run dev
+
+# Admin Flutter app
+cd admin
+flutter pub get
+flutter run
+```
+
 ## Screenshots
 
 Every screen below is captured from this build at a 390 × 844 phone viewport. The app ships with both the light Zomato-inspired theme and the red-on-black dark theme. Click any image to open it full size.

@@ -85,3 +85,29 @@ glossary.md
 # Test / temp
 .testtmp/
 *.testtmp>
+
+# Backend
+server/node_modules/
+server/dist/
+server/.env
+# Temp
+.testtmp/
+
+node_modules/
+.scratch* 
+# Local verification screenshots
+/*.png
+/.testtmp/
+
+
+# Admin build artifacts
+admin/build/
+admin/.dart_tool/
+admin/android/.gradle/
+admin/ios/Pods/
+
+# Admin generated
+admin/android/local.properties
+admin/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+admin/ios/Flutter/Generated.xcconfig
+admin/ios/Flutter/flutter_export_environment.sh
