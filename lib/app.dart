@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'screens/connection_error_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'services/api_sync.dart';
 import 'state/foodie_app_state.dart';
 import 'state/foodie_scope.dart';
 import 'theme/app_theme.dart';
@@ -37,7 +39,15 @@ class _FoodieAppState extends State<FoodieApp> {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: _state.themeMode,
-            home: const WelcomeScreen(),
+            home: ValueListenableBuilder<ApiConnection>(
+              valueListenable: ApiSync.connection,
+              builder: (BuildContext context, ApiConnection connection, Widget? child) {
+                if (connection == ApiConnection.offline && !ApiSync.hasLoadedOnce) {
+                  return const ConnectionErrorScreen();
+                }
+                return const WelcomeScreen();
+              },
+            ),
             builder: (BuildContext context, Widget? child) {
               // The system bars follow the active palette so the status and
               // navigation icons stay legible on either canvas.

@@ -11,10 +11,15 @@ import '../models/restaurant.dart';
 /// Pulls menu data from the Foodie backend and replaces the demo lists in
 /// [MockData]. A periodic refresh gives the customer app near-real-time
 /// updates until the Neon Realtime client is wired in.
+enum ApiConnection { unknown, online, offline }
+
 class ApiSync {
   /// Bumped after every successful menu/restaurant refresh so the app can
   /// rebuild without a manual pull-to-refresh.
   static final ValueNotifier<int> revision = ValueNotifier<int>(0);
+  static final ValueNotifier<ApiConnection> connection =
+      ValueNotifier<ApiConnection>(ApiConnection.unknown);
+  static bool hasLoadedOnce = false;
 
   ApiSync({String? baseUrl})
       : baseUrl = baseUrl ??
@@ -69,9 +74,12 @@ class ApiSync {
       MockData.restaurants
         ..clear()
         ..addAll(next);
+      hasLoadedOnce = true;
+      connection.value = ApiConnection.online;
       revision.value++;
     } catch (_) {
       // Keep the bundled demo data when the backend is unreachable.
+      connection.value = ApiConnection.offline;
     }
   }
 
