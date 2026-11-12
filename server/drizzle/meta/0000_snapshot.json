@@ -1,10 +1,8 @@
 {
-  "id": "7504d509-5f04-45de-a3b9-b9faad69c49f",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "add_ons": {
+    "public.add_ons": {
       "name": "add_ons",
       "schema": "",
       "columns": {
@@ -38,21 +36,24 @@
         "add_ons_menu_item_id_menu_items_id_fk": {
           "name": "add_ons_menu_item_id_menu_items_id_fk",
           "tableFrom": "add_ons",
-          "tableTo": "menu_items",
           "columnsFrom": [
             "menu_item_id"
           ],
+          "tableTo": "menu_items",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "admin_users": {
+    "public.admin_users": {
       "name": "admin_users",
       "schema": "",
       "columns": {
@@ -88,14 +89,17 @@
       "uniqueConstraints": {
         "admin_users_username_unique": {
           "name": "admin_users_username_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "username"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "coupons": {
+    "public.coupons": {
       "name": "coupons",
       "schema": "",
       "columns": {
@@ -150,14 +154,17 @@
       "uniqueConstraints": {
         "coupons_code_unique": {
           "name": "coupons_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "customers": {
+    "public.customers": {
       "name": "customers",
       "schema": "",
       "columns": {
@@ -196,9 +203,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "daily_summaries": {
+    "public.daily_summaries": {
       "name": "daily_summaries",
       "schema": "",
       "columns": {
@@ -264,32 +274,59 @@
       },
       "indexes": {
         "daily_summaries_date_idx": {
-          "name": "daily_summaries_date_idx",
           "columns": [
-            "date"
+            {
+              "expression": "date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "daily_summaries_date_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "daily_summaries_restaurant_idx": {
-          "name": "daily_summaries_restaurant_idx",
           "columns": [
-            "restaurant_id"
+            {
+              "expression": "restaurant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "daily_summaries_restaurant_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "daily_summaries_locality_idx": {
-          "name": "daily_summaries_locality_idx",
           "columns": [
-            "locality"
+            {
+              "expression": "locality",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "daily_summaries_locality_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "food_categories": {
+    "public.food_categories": {
       "name": "food_categories",
       "schema": "",
       "columns": {
@@ -327,9 +364,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "menu_items": {
+    "public.menu_items": {
       "name": "menu_items",
       "schema": "",
       "columns": {
@@ -433,32 +473,43 @@
       },
       "indexes": {
         "menu_items_restaurant_idx": {
-          "name": "menu_items_restaurant_idx",
           "columns": [
-            "restaurant_id"
+            {
+              "expression": "restaurant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "menu_items_restaurant_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "menu_items_restaurant_id_restaurants_id_fk": {
           "name": "menu_items_restaurant_id_restaurants_id_fk",
           "tableFrom": "menu_items",
-          "tableTo": "restaurants",
           "columnsFrom": [
             "restaurant_id"
           ],
+          "tableTo": "restaurants",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "order_items": {
+    "public.order_items": {
       "name": "order_items",
       "schema": "",
       "columns": {
@@ -524,21 +575,24 @@
         "order_items_order_id_orders_id_fk": {
           "name": "order_items_order_id_orders_id_fk",
           "tableFrom": "order_items",
-          "tableTo": "orders",
           "columnsFrom": [
             "order_id"
           ],
+          "tableTo": "orders",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "order_status_history": {
+    "public.order_status_history": {
       "name": "order_status_history",
       "schema": "",
       "columns": {
@@ -573,21 +627,24 @@
         "order_status_history_order_id_orders_id_fk": {
           "name": "order_status_history_order_id_orders_id_fk",
           "tableFrom": "order_status_history",
-          "tableTo": "orders",
           "columnsFrom": [
             "order_id"
           ],
+          "tableTo": "orders",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "orders": {
+    "public.orders": {
       "name": "orders",
       "schema": "",
       "columns": {
@@ -695,46 +752,73 @@
       },
       "indexes": {
         "orders_status_idx": {
-          "name": "orders_status_idx",
           "columns": [
-            "status"
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "orders_status_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "orders_locality_idx": {
-          "name": "orders_locality_idx",
           "columns": [
-            "locality"
+            {
+              "expression": "locality",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "orders_locality_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "orders_created_idx": {
-          "name": "orders_created_idx",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "orders_created_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "orders_customer_id_customers_id_fk": {
           "name": "orders_customer_id_customers_id_fk",
           "tableFrom": "orders",
-          "tableTo": "customers",
           "columnsFrom": [
             "customer_id"
           ],
+          "tableTo": "customers",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "restaurants": {
+    "public.restaurants": {
       "name": "restaurants",
       "schema": "",
       "columns": {
@@ -863,14 +947,23 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "7504d509-5f04-45de-a3b9-b9faad69c49f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }
