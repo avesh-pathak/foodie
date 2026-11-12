@@ -117,6 +117,58 @@ flutter pub get
 flutter run
 ```
 
+## Kitchen app
+
+A separate Flutter kitchen app lives in `kitchen/` and uses the same Neon-backed
+Hono API. It is intentionally separate from the customer and admin apps.
+
+- Sign in with `kitchen` / `password123` (demo only). The account is bound to a
+  single restaurant at seed time.
+- View the restaurant's orders on a live Kanban board: Confirmed, Preparing, Ready.
+- Live prep-time timer per order with green/amber/red thresholds.
+- Move orders forward: Start cooking (confirmed→preparing), Mark ready (preparing→ready).
+- Toggle item availability (in stock / sold out); changes broadcast to customer
+  and admin apps through Neon Realtime.
+- Sound + vibration alert on new orders.
+- Offline error screen with retry.
+
+Admin writes and kitchen writes publish through Neon Realtime; the API streams
+changes to all apps over SSE.
+
+<table align="center">
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/kitchen-login.png" width="230" alt="Foodie Kitchen login screen with demo credentials" />
+      <br /><sub><b>Kitchen login</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/kitchen-orders.png" width="230" alt="Foodie Kitchen orders board with Kanban columns and prep timers" />
+      <br /><sub><b>Orders board</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/kitchen-availability.png" width="230" alt="Foodie Kitchen item availability toggles" />
+      <br /><sub><b>Item availability</b></sub>
+    </td>
+  </tr>
+</table>
+
+### Run the kitchen app
+
+```bash
+# (API must be running, see above)
+
+cd kitchen
+flutter pub get
+flutter run
+```
+
+### Run the customer app
+
+```bash
+flutter pub get
+flutter run
+```
+
 ## Screenshots
 
 Every screen below is captured from this build at a 390 × 844 phone viewport. The app ships with both the light Zomato-inspired theme and the red-on-black dark theme. Click any image to open it full size.
@@ -457,9 +509,12 @@ Project-scoped skills live in `.agents/skills` (lockfile: `skills-lock.json`) an
 
 ## Limitations
 
-- Customer app only — no admin, restaurant staff or rider apps.
-- No persistence: everything resets on app restart or logout.
+- Customer, admin and kitchen apps share one Neon Postgres database but there
+  is no real authentication beyond the demo credentials.
+- No persistence beyond the database: customer app state resets on restart/logout.
 - Payment methods are simulations and never collect real card/UPI data.
+- Tracking is a designed demo, not real GPS or a maps integration.
+- No push notifications (in-app alerts only).
 - Tracking is a designed demo, not real GPS or a maps integration.
 - No push notifications, backend, analytics or external APIs.
 
