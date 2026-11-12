@@ -1,0 +1,84 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+*.tmp
+*.temp
+*.bak
+*.orig
+.DS_Store
+Thumbs.db
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ / editor related
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+*.code-workspace
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+/.dart_tool/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio / Gradle build artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/build/
+/android/.gradle/
+/ios/build/
+/macos/build/
+/linux/build/
+/windows/build/
+
+# Widget Preview related
+.widget_preview/
+.testtmp/
+
+# Build outputs (APKs, AABs, IPAs, web)
+/dist/
+*.apk
+*.aab
+*.ipa
+*.app
+*.dSYM.zip
+
+# Agents / tooling (not part of app source)
+.agents/
+skills-lock.json
+
+# Reports and idea notes (keep README.md and CREDITS.md)
+*.html
+!web/index.html
+*report*.md
+*Report*.md
+idea*.md
+notes*.md
+*.report.md
+
+# Test / temp
+.testtmp/
+*.testtmp>
