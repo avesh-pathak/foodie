@@ -112,5 +112,13 @@ admin/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.jav
 admin/ios/Flutter/Generated.xcconfig
 admin/ios/Flutter/flutter_export_environment.sh
 
+# Kitchen generated
+kitchen/build/
+kitchen/.dart_tool/
+kitchen/android/.gradle/
+kitchen/android/local.properties
+kitchen/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+kitchen/ios/Pods/
+
 # Wayfinder local-only maps/tickets
 docs/wayfinder/
