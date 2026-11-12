@@ -35,6 +35,7 @@ export const menuItems = pgTable('menu_items', {
   homeCategory: text('home_category'),
   isBestseller: boolean('is_bestseller').notNull().default(false),
   isRecommended: boolean('is_recommended').notNull().default(false),
+  isAvailable: boolean('is_available').notNull().default(true),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (t) => ({
@@ -89,6 +90,9 @@ export const orders = pgTable('orders', {
   gst: numeric('gst', { precision: 10, scale: 2 }).notNull().default('0'),
   total: numeric('total', { precision: 10, scale: 2 }).notNull(),
   couponCode: text('coupon_code'),
+  confirmedAt: timestamp('confirmed_at'),
+  preparingStartedAt: timestamp('preparing_started_at'),
+  readyAt: timestamp('ready_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (t) => ({
@@ -136,5 +140,13 @@ export const adminUsers = pgTable('admin_users', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const kitchenUsers = pgTable('kitchen_users', {
+  id: text('id').primaryKey(),
+  username: text('username').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  restaurantId: text('restaurant_id').notNull().references(() => restaurants.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
