@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Zomato dark: matches the app canvas so the launch does not flash. -->
+    <color name="launch_background">#0F0F10</color>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Zomato light: the native splash sits on the same white as the app. -->
+    <color name="launch_background">#FFFFFF</color>
+</resources>
