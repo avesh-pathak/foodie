@@ -377,9 +377,13 @@ Three historical sample orders are included so History is populated on first lau
 
 ```text
 food/
-├── android/                    # Android host project
+├── android/                    # Android host project (customer app)
 ├── ios/                        # iOS host project
 ├── web/                        # Browser preview target
+├── admin/                      # Separate Flutter admin app
+├── kitchen/                    # Separate Flutter kitchen app
+├── server/                     # Hono API + Neon Postgres
+├── packages/foodie_core/       # Shared Dart API client + models
 ├── docs/screenshots/           # Screenshots used in this README
 ├── assets/
 │   ├── brand/app_icon.png      # Source app icon artwork
