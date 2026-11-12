@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:fl_chart/fl_chart.dart';
@@ -146,7 +147,7 @@ class _AdminShellState extends State<AdminShell> {
   @override
   void initState() {
     super.initState();
-    _pages = List<Widget?>.filled(4, null);
+    _pages = List<Widget?>.filled(5, null);
     _pages[0] = _pageFor(0);
   }
 
@@ -158,6 +159,8 @@ class _AdminShellState extends State<AdminShell> {
         return MenuPage(api: widget.api);
       case 2:
         return OrdersPage(api: widget.api);
+      case 3:
+        return KitchenTab(api: widget.api);
       default:
         return AnalyticsPage(api: widget.api);
     }
@@ -194,6 +197,7 @@ class _AdminShellState extends State<AdminShell> {
                   NavigationRailDestination(icon: Icon(Icons.storefront), label: Text('Restaurants')),
                   NavigationRailDestination(icon: Icon(Icons.menu_book), label: Text('Menu')),
                   NavigationRailDestination(icon: Icon(Icons.receipt_long), label: Text('Orders')),
+                  NavigationRailDestination(icon: Icon(Icons.soup_kitchen), label: Text('Kitchen')),
                   NavigationRailDestination(icon: Icon(Icons.insights), label: Text('Analytics')),
                 ],
               ),
@@ -212,6 +216,7 @@ class _AdminShellState extends State<AdminShell> {
                 NavigationDestination(icon: Icon(Icons.storefront), label: 'Restaurants'),
                 NavigationDestination(icon: Icon(Icons.menu_book), label: 'Menu'),
                 NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Orders'),
+                NavigationDestination(icon: Icon(Icons.soup_kitchen), label: 'Kitchen'),
                 NavigationDestination(icon: Icon(Icons.insights), label: 'Analytics'),
               ],
             ),
@@ -616,6 +621,12 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   List<dynamic> _hours = [];
   List<dynamic> _weekdays = [];
   List<dynamic> _months = [];
+  double _avgPrep = 0;
+  List<dynamic> _prepByRestaurant = [];
+  List<dynamic> _prepByDish = [];
+  List<dynamic> _prepByHour = [];
+  List<dynamic> _prepTrend = [];
+  List<dynamic> _prepSlowest = [];
   bool _loading = true;
   String? _error;
 
@@ -636,6 +647,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         widget.api.getList('/analytics/peak-hours'),
         widget.api.getList('/analytics/by-weekday'),
         widget.api.getList('/analytics/by-month'),
+        widget.api.getMap('/analytics/prep-time'),
       ]);
       _overview = AnalyticsOverview.fromJson(results[0] as Map<String, dynamic>);
       _areas = results[1] as List<dynamic>;
@@ -644,6 +656,13 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       _hours = results[4] as List<dynamic>;
       _weekdays = results[5] as List<dynamic>;
       _months = results[6] as List<dynamic>;
+      final prep = results[7] as Map<String, dynamic>;
+      _avgPrep = double.tryParse('${prep['avgPrepSeconds']}') ?? 0;
+      _prepByRestaurant = (prep['byRestaurant'] as List?) ?? [];
+      _prepByDish = (prep['byDish'] as List?) ?? [];
+      _prepByHour = (prep['byHour'] as List?) ?? [];
+      _prepTrend = (prep['trend'] as List?) ?? [];
+      _prepSlowest = (prep['slowest'] as List?) ?? [];
     } catch (_) {
       _error = 'No internet connection. Check the API server and try again.';
     } finally {
@@ -702,6 +721,36 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 color: const Color(0xFF2E7D5B),
               )).toList(),
         ),
+        const SizedBox(height: 20),
+        _SectionHeader(title: 'Prep time', subtitle: 'Kitchen performance from ready orders'),
+        const SizedBox(height: 12),
+        Wrap(spacing: 10, runSpacing: 10, children: [
+          _PillMetric(label: 'Avg prep', value: _fmtPrep(_avgPrep), icon: Icons.timer_outlined, tint: const Color(0xFF3F5C93), soft: const Color(0xFFE8EDF7)),
+        ]),
+        const SizedBox(height: 12),
+        LayoutBuilder(builder: (context, constraints) {
+          final wide = constraints.maxWidth > 760;
+          final charts = <Widget>[
+            _ChartCard(title: 'Prep time by restaurant', subtitle: 'Average seconds to ready', child: SizedBox(height: 220, child: _prepRestaurantBar())),
+            _ChartCard(title: 'Prep time by hour', subtitle: 'Average seconds by hour of day', child: SizedBox(height: 220, child: _prepHourBar())),
+            _ChartCard(title: 'Prep time trend', subtitle: 'Average seconds over time', child: SizedBox(height: 220, child: _prepTrendLine())),
+          ];
+          if (!wide) return Column(children: charts.map((c) => Padding(padding: const EdgeInsets.only(bottom: 12), child: c)).toList());
+          return Wrap(spacing: 12, runSpacing: 12, children: charts.map((c) => SizedBox(width: (constraints.maxWidth - 12) / 2, child: c)).toList());
+        }),
+        const SizedBox(height: 12),
+        _RankBars(
+          title: 'Prep time by dish',
+          subtitle: 'Average seconds per dish',
+          items: _prepByDish.take(7).map((e) => _RankItem(
+                label: '${e['name']}',
+                meta: _fmtPrep(double.tryParse('${e['avg']}') ?? 0),
+                value: double.tryParse('${e['avg']}') ?? 0,
+                color: const Color(0xFF9A6206),
+              )).toList(),
+        ),
+        const SizedBox(height: 12),
+        _SlowestOrdersCard(items: _prepSlowest),
       ],
     );
   }
@@ -805,6 +854,119 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     ]);
   }
 
+  String _fmtPrep(double seconds) {
+    if (seconds <= 0) return '—';
+    final m = (seconds / 60).floor();
+    final s = (seconds % 60).round();
+    if (m == 0) return '${s}s';
+    return '${m}m ${s}s';
+  }
+
+  Widget _prepRestaurantBar() {
+    final top = _prepByRestaurant.take(6).toList();
+    if (top.isEmpty) return const Center(child: Text('No prep data yet'));
+    return BarChart(BarChartData(
+      borderData: FlBorderData(show: false),
+      gridData: const FlGridData(show: false),
+      titlesData: FlTitlesData(
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (v, _) {
+          final i = v.toInt();
+          if (i < 0 || i >= top.length) return const SizedBox();
+          return Text('${top[i]['name'] ?? ''}'.split(' ').first, style: const TextStyle(fontSize: 9, color: Color(0xFF7A6F69)));
+        })),
+      ),
+      barGroups: List.generate(top.length, (i) {
+        final value = double.tryParse('${top[i]['avg']}') ?? 0;
+        return BarChartGroupData(x: i, barRods: [BarChartRodData(toY: value, color: const Color(0xFF3F5C93), width: 20, borderRadius: BorderRadius.circular(6))]);
+      }),
+    ));
+  }
+
+  Widget _prepHourBar() {
+    if (_prepByHour.isEmpty) return const Center(child: Text('No prep data yet'));
+    const palette = [Color(0xFFB7C6E6), Color(0xFF9FB1DD), Color(0xFF7E96D1), Color(0xFF5E7BC5), Color(0xFF3F5C93), Color(0xFF2E4570)];
+    return BarChart(BarChartData(
+      borderData: FlBorderData(show: false),
+      gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => const FlLine(color: Color(0xFFF1E7E1), strokeWidth: 1)),
+      titlesData: FlTitlesData(
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (v, _) {
+          final i = v.toInt();
+          if (i < 0 || i >= _prepByHour.length) return const SizedBox();
+          return Text('${_prepByHour[i]['hour']}h', style: const TextStyle(fontSize: 9, color: Color(0xFF7A6F69)));
+        })),
+      ),
+      barGroups: List.generate(_prepByHour.length, (i) => BarChartGroupData(x: i, barRods: [BarChartRodData(toY: (double.tryParse('${_prepByHour[i]['avg']}') ?? 0), color: palette[i % palette.length], width: 12, borderRadius: BorderRadius.circular(5))])),
+    ));
+  }
+
+  Widget _prepTrendLine() {
+    final spots = <FlSpot>[];
+    for (var i = 0; i < _prepTrend.length; i++) {
+      spots.add(FlSpot(i.toDouble(), double.tryParse('${_prepTrend[i]['avg']}') ?? 0));
+    }
+    if (spots.isEmpty) spots.add(const FlSpot(0, 0));
+    return LineChart(LineChartData(
+      borderData: FlBorderData(show: false),
+      gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => const FlLine(color: Color(0xFFF1E7E1), strokeWidth: 1)),
+      titlesData: FlTitlesData(
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (v, _) {
+          final i = v.toInt();
+          if (i < 0 || i >= _prepTrend.length) return const SizedBox();
+          return Text('${_prepTrend[i]['date']}'.substring(5), style: const TextStyle(fontSize: 10, color: Color(0xFF7A6F69)));
+        })),
+      ),
+      lineBarsData: [LineChartBarData(spots: spots, isCurved: true, color: const Color(0xFF3F5C93), barWidth: 3, dotData: const FlDotData(show: true), belowBarData: BarAreaData(show: true, color: const Color(0x223F5C93)))],
+    ));
+  }
+
+}
+
+class _SlowestOrdersCard extends StatelessWidget {
+  const _SlowestOrdersCard({required this.items});
+  final List<dynamic> items;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return Card(
+        child: Padding(padding: const EdgeInsets.all(18), child: Text('No slow orders yet', style: TextStyle(color: Colors.brown.shade400))),
+      );
+    }
+    return Card(
+      margin: const EdgeInsets.only(top: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Slowest orders', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+          const SizedBox(height: 12),
+          ...items.map((e) {
+            final elapsed = double.tryParse('${e['elapsed']}') ?? 0;
+            final m = (elapsed / 60).floor();
+            final s = (elapsed % 60).round();
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(children: [
+                Expanded(child: Text('${e['orderId']}', overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                const SizedBox(width: 8),
+                Text('${e['restaurant'] ?? ''}', overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11, color: Colors.brown.shade400)),
+                const SizedBox(width: 8),
+                Text(m > 0 ? '${m}m ${s}s' : '${s}s', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFC4202F))),
+              ]),
+            );
+          }),
+        ]),
+      ),
+    );
+  }
 }
 
 class _Field extends StatelessWidget {
@@ -1215,3 +1377,333 @@ String _inr(num value) {
 }
 
 
+
+// ---------------- Kitchen tab ----------------
+
+class KitchenTab extends StatefulWidget {
+  const KitchenTab({super.key, required this.api});
+  final ApiClient api;
+
+  @override
+  State<KitchenTab> createState() => _KitchenTabState();
+}
+
+class _KitchenTabState extends State<KitchenTab> {
+  List<Restaurant> _restaurants = [];
+  List<Order> _orders = [];
+  Map<String, List<Map<String, dynamic>>> _orderItems = {};
+  String? _selectedRestaurant; // null => all
+  bool _loading = true;
+  String? _error;
+  Timer? _ticker;
+
+  List<MenuItem> _menu = [];
+  bool _menuLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      final rdata = await widget.api.getList('/restaurants');
+      _restaurants = rdata.map((e) => Restaurant.fromJson(e as Map<String, dynamic>)).toList();
+      await _loadOrders();
+      await _loadMenu();
+    } catch (_) {
+      _error = 'No internet connection. Check the API server and try again.';
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadOrders() async {
+    final path = _selectedRestaurant == null
+        ? '/orders'
+        : '/orders?restaurantId=$_selectedRestaurant';
+    final data = await widget.api.getList(path);
+    _orders = data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
+    final itemsMap = <String, List<Map<String, dynamic>>>{};
+    await Future.wait(_orders.map((o) async {
+      try {
+        final detail = await widget.api.getMap('/orders/${o.id}');
+        final items = (detail['items'] as List?) ?? [];
+        itemsMap[o.id] = items.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      } catch (_) {
+        itemsMap[o.id] = const [];
+      }
+    }));
+    _orderItems = itemsMap;
+  }
+
+  Future<void> _setStatus(Order o, String status) async {
+    try {
+      await widget.api.put('/orders/${o.id}/status', {'status': status});
+      await _loadOrders();
+      if (mounted) setState(() {});
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to update status')));
+      }
+    }
+  }
+
+  Future<void> _loadMenu() async {
+    setState(() => _menuLoading = true);
+    try {
+      final data = _selectedRestaurant == null
+          ? await widget.api.getList('/menu')
+          : await widget.api.getList('/menu?restaurantId=$_selectedRestaurant');
+      _menu = data.map((e) => MenuItem.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (_) {
+      // ignore
+    } finally {
+      if (mounted) setState(() => _menuLoading = false);
+    }
+  }
+
+  Future<void> _toggleAvailability(MenuItem item) async {
+    try {
+      await widget.api.put('/menu/${item.id}', {'isAvailable': !item.isAvailable});
+      final idx = _menu.indexWhere((m) => m.id == item.id);
+      if (idx >= 0) {
+        _menu[idx] = MenuItem(
+          id: item.id,
+          restaurantId: item.restaurantId,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          image: item.image,
+          rating: item.rating,
+          ratingCount: item.ratingCount,
+          isVeg: item.isVeg,
+          category: item.category,
+          homeCategory: item.homeCategory,
+          isBestseller: item.isBestseller,
+          isRecommended: item.isRecommended,
+          isAvailable: !item.isAvailable,
+          addOns: item.addOns,
+        );
+      }
+      if (mounted) setState(() {});
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to toggle availability')));
+      }
+    }
+  }
+
+  Color _timerColor(int seconds) {
+    if (seconds < 600) return const Color(0xFF1f8a4c);
+    if (seconds <= 1200) return const Color(0xFFb87a12);
+    return const Color(0xFFC4202F);
+  }
+
+  int _liveSeconds(Order o) {
+    DateTime? start = o.preparingStartedAt ?? o.confirmedAt ?? o.createdAt;
+    DateTime? end = o.readyAt;
+    if (start == null) return 0;
+    final e = (end ?? DateTime.now()).difference(start).inSeconds;
+    return e < 0 ? 0 : e;
+  }
+
+  String _formatTimer(Order o) {
+    final seconds = _liveSeconds(o);
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  List<Order> _byStatus(String status) => _orders.where((o) => o.status == status).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    if (_error != null) return _ErrorState(onRetry: _load);
+    if (_loading) return const _SkeletonList();
+    if (_menu.isEmpty && _restaurants.isNotEmpty) {
+      _loadMenu();
+    }
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Row(children: [
+              Expanded(
+                child: DropdownButtonFormField<String?>(
+                  initialValue: _selectedRestaurant,
+                  decoration: const InputDecoration(labelText: 'Restaurant', border: OutlineInputBorder(), isDense: true),
+                  items: [
+                    const DropdownMenuItem<String?>(value: null, child: Text('All restaurants')),
+                    ..._restaurants.map((r) => DropdownMenuItem<String?>(value: r.id, child: Text(r.name))),
+                  ],
+                  onChanged: (v) async {
+                    setState(() => _selectedRestaurant = v);
+                    await _loadOrders();
+                    _menu = [];
+                    await _loadMenu();
+                    if (mounted) setState(() {});
+                  },
+                ),
+              ),
+            ]),
+          ),
+          const TabBar(tabs: [Tab(text: 'Orders'), Tab(text: 'Availability')]),
+          Expanded(
+            child: TabBarView(children: [
+              _buildOrdersBoard(),
+              _buildAvailability(),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrdersBoard() {
+    return LayoutBuilder(builder: (context, constraints) {
+      final columns = [
+        _KanbanColumn(title: 'Confirmed', orders: _byStatus('confirmed'), color: const Color(0xFF9A6206)),
+        _KanbanColumn(title: 'Preparing', orders: _byStatus('preparing'), color: const Color(0xFFb87a12)),
+        _KanbanColumn(title: 'Ready', orders: _byStatus('ready'), color: const Color(0xFF1f8a4c)),
+      ];
+      if (constraints.maxWidth < 700) {
+        return ListView(
+          padding: const EdgeInsets.all(12),
+          children: columns.map((c) => Padding(padding: const EdgeInsets.only(bottom: 12), child: c.build(context, this))).toList(),
+        );
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: columns.map((c) => Expanded(child: Padding(padding: const EdgeInsets.all(8), child: c.build(context, this)))).toList(),
+      );
+    });
+  }
+
+  Widget _buildAvailability() {
+    if (_menuLoading) return const Center(child: CircularProgressIndicator());
+    return ListView(
+      padding: const EdgeInsets.all(12),
+      children: [
+        ..._menu.map((m) => Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                title: Text(m.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(m.isAvailable ? 'Available' : 'Sold out', style: TextStyle(color: m.isAvailable ? const Color(0xFF1f8a4c) : const Color(0xFFC4202F))),
+                trailing: Switch(
+                  value: m.isAvailable,
+                  onChanged: (_) => _toggleAvailability(m),
+                  activeThumbColor: const Color(0xFF1f8a4c),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+}
+
+class _KanbanColumn {
+  final String title;
+  final List<Order> orders;
+  final Color color;
+  _KanbanColumn({required this.title, required this.orders, required this.color});
+
+  Widget build(BuildContext context, _KitchenTabState state) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Text(title, style: TextStyle(fontWeight: FontWeight.w800, color: color)),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(999)),
+                child: Text('${orders.length}', style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 12)),
+              ),
+            ]),
+            const SizedBox(height: 8),
+            ...orders.map((o) => _OrderCard(order: o, state: state)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OrderCard extends StatelessWidget {
+  const _OrderCard({required this.order, required this.state});
+  final Order order;
+  final _KitchenTabState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final seconds = state._liveSeconds(order);
+    final color = state._timerColor(seconds);
+    final items = state._orderItems[order.id] ?? const [];
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFEFE5DE)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text('#${order.id}', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+            const Spacer(),
+            Text(state._formatTimer(order), style: TextStyle(fontWeight: FontWeight.w700, color: color, fontFeatures: const [FontFeature.tabularFigures()])),
+          ]),
+          const SizedBox(height: 6),
+          ...items.map((it) => Text('${it['quantity']}x ${it['name']}', style: const TextStyle(fontSize: 12, color: Color(0xFF7A6F69)))),
+          const SizedBox(height: 6),
+          Row(children: [
+            _Flag(label: order.locality.isEmpty ? 'Pickup' : 'Delivery'),
+            const SizedBox(width: 6),
+            _Flag(label: '\u20B9${order.total.toStringAsFixed(0)}'),
+          ]),
+          const SizedBox(height: 8),
+          Row(children: [
+            if (order.status == 'confirmed')
+              Expanded(child: FilledButton(onPressed: () => state._setStatus(order, 'preparing'), child: const Text('Start cooking'))),
+            if (order.status == 'preparing')
+              Expanded(child: FilledButton(onPressed: () => state._setStatus(order, 'ready'), child: const Text('Mark ready'))),
+            if (order.status == 'ready')
+              Expanded(child: OutlinedButton(onPressed: null, child: const Text('Awaiting pickup'))),
+          ]),
+        ],
+      ),
+    );
+  }
+}
+
+class _Flag extends StatelessWidget {
+  const _Flag({required this.label});
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(color: const Color(0xFFF3ECE7), borderRadius: BorderRadius.circular(6)),
+      child: Text(label, style: const TextStyle(fontSize: 11)),
+    );
+  }
+}
