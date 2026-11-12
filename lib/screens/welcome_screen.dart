@@ -91,8 +91,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     (available * 0.046).clamp(26.0, 38.0);
                 final bool showBody = available >= 585;
                 final bool showChips = available >= 520;
-                final double contentWidth =
-                    math.min(480.0, constraints.maxWidth - 40);
+                final double contentWidth = math.max(
+                  1.0,
+                  math.min(480.0, constraints.maxWidth - 40),
+                );
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 14, 20, 16),

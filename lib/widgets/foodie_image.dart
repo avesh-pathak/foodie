@@ -20,38 +20,42 @@ class FoodieImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final IconData fallbackIcon;
 
-  @override
-  Widget build(BuildContext context) {
-    final Widget image = Image.asset(
-      asset,
+  Widget _fallback(BuildContext context, Object error, StackTrace? stack) {
+    return Container(
       width: width,
       height: height,
-      fit: fit,
-      gaplessPlayback: true,
-      errorBuilder: (BuildContext context, Object error, StackTrace? stack) {
-        return Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                context.foodie.primarySoft,
-                context.foodie.surfaceWarm,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Center(
-            child: Icon(
-              fallbackIcon,
-              color: context.foodie.primaryInk,
-              size: 36,
-            ),
-          ),
-        );
-      },
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: <Color>[context.foodie.primarySoft, context.foodie.surfaceWarm],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Icon(fallbackIcon, color: context.foodie.primaryInk, size: 36),
+      ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget image = asset.startsWith('http')
+        ? Image.network(
+            asset,
+            width: width,
+            height: height,
+            fit: fit,
+            gaplessPlayback: true,
+            errorBuilder: (BuildContext context, Object error, StackTrace? stack) => _fallback(context, error, stack),
+          )
+        : Image.asset(
+            asset,
+            width: width,
+            height: height,
+            fit: fit,
+            gaplessPlayback: true,
+            errorBuilder: (BuildContext context, Object error, StackTrace? stack) => _fallback(context, error, stack),
+          );
 
     if (borderRadius == null) return image;
     return ClipRRect(borderRadius: borderRadius!, child: image);
