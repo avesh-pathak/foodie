@@ -111,3 +111,6 @@ admin/android/local.properties
 admin/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 admin/ios/Flutter/Generated.xcconfig
 admin/ios/Flutter/flutter_export_environment.sh
+
+# Wayfinder local-only maps/tickets
+docs/wayfinder/
