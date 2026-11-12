@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../models/cart_item.dart';
 import '../models/delivery_address.dart';
 import '../models/order.dart';
+import '../services/orders_api.dart';
 import '../state/foodie_app_state.dart';
 import '../state/foodie_scope.dart';
 import '../theme/app_theme.dart';
@@ -141,6 +142,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     await Future<void>.delayed(const Duration(milliseconds: 750));
     if (!mounted) return;
     final FoodOrder order = state.placeOrder();
+    // Persist the order so the admin app and analytics see it.
+    OrdersApi().place(order, state.selectedAddress);
     Navigator.of(context).pushAndRemoveUntil(
       FoodiePageRoute<void>(
         page: OrderSuccessScreen(orderId: order.id),

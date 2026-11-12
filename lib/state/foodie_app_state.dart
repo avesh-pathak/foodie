@@ -8,10 +8,20 @@ import '../models/delivery_address.dart';
 import '../models/food_item.dart';
 import '../models/order.dart';
 import '../models/restaurant.dart';
+import '../services/api_sync.dart';
 
 class FoodieAppState extends ChangeNotifier {
   FoodieAppState() {
     _orders = MockData.sampleOrders();
+    ApiSync.revision.addListener(_onLiveDataChanged);
+  }
+
+  void _onLiveDataChanged() => notifyListeners();
+
+  @override
+  void dispose() {
+    ApiSync.revision.removeListener(_onLiveDataChanged);
+    super.dispose();
   }
 
   String? _displayName;
