@@ -46,7 +46,7 @@ abstract final class MockData {
       id: 'all',
       label: 'All',
       icon: Icons.grid_view_rounded,
-      // The "All" tile is the brand tile, so it wears Zomato red rather than
+      // The "All" tile is the brand tile, so it wears Foodie red rather than
       // borrowing a cuisine hue.
       color: Color(0xFFC4202F),
       softColor: Color(0xFFFDEBEE),
@@ -137,7 +137,7 @@ abstract final class MockData {
       subtitle: 'On your first order above ₹399',
       code: 'FOODIE50',
       image: 'assets/images/promo_pizza.jpg',
-      // Zomato red: white promo copy clears 5.8:1 over the lightest stop.
+      // Foodie red: white promo copy clears 5.8:1 over the lightest stop.
       colors: <Color>[Color(0xFF7A0F18), Color(0xFFC4202F)],
     ),
     PromoBanner(

@@ -27,7 +27,7 @@ A complete, polished Flutter restaurant ordering MVP built with Material 3. The 
 
 ## Customer app
 
-> **Design direction:** Zomato's identity — white canvas, `#E23744`-family
+> **Design direction:** warm red-on-white palette — `#E23744`-family
 > red for every action, near-black ink, green star rating badges and an
 > all-sans (Plus Jakarta Sans) type scale. Rounded cards, food photography
 > bundled locally, light neutral shadows, small purposeful motion. A matching
@@ -179,7 +179,7 @@ flutter run
 
 ## Screenshots
 
-Every screen below is captured from this build at a 390 × 844 phone viewport. The app ships with both the light Zomato-inspired theme and the red-on-black dark theme. Click any image to open it full size.
+Every screen below is captured from this build at a 390 × 844 phone viewport. The app ships with both the light Foodie-inspired theme and the red-on-black dark theme. Click any image to open it full size.
 
 ### Ordering flow
 
@@ -448,7 +448,7 @@ Calculations:
 
 ## Theming — one stylesheet, light and dark
 
-The app wears **Zomato's identity**: `#E23744`-family red (`#DC2B3B` on the
+The app uses **the Foodie palette**: `#E23744`-family red (`#DC2B3B` on the
 fill, so white labels clear AA), white surfaces, near-black ink, a rating
 green badge and an all-sans type scale. Flutter's answer to CSS custom
 properties is a `ThemeExtension`: a bundle of named tokens the `Theme`
@@ -460,7 +460,7 @@ It defines two extensions plus a `BuildContext` accessor:
 ```dart
 context.foodie.surface        // card surface
 context.foodie.ink            // body text
-context.foodie.primary        // Zomato red (fills)
+context.foodie.primary        // Foodie red (fills)
 context.foodie.onPrimary      // the label colour that sits on it
 context.foodie.successInk     // green as text on its tint
 context.foodie.gold           // loyalty / value
@@ -480,7 +480,7 @@ The choice lives in `FoodieAppState.themeMode`.
 
 | Rule | Why |
 |---|---|
-| White labels sit on the fill red | white on Zomato's `#E23744` is 4.32:1, so the fill is deepened to `#DC2B3B` (4.72:1) |
+| White labels sit on the fill red | white on Foodie's `#E23744` is 4.32:1, so the fill is deepened to `#DC2B3B` (4.72:1) |
 | `primaryInk` for red text/icons on white | `primary` as text is only 4.7:1 against white for large type; `#C4202F` gives 5.84:1 |
 | `*Ink` tokens for text on `*Soft` tints | keeps 4.5:1 on every tint |
 | Red means brand/action only | "preparing" is `warning`, "delivered" is `success`, "live" is `info` |

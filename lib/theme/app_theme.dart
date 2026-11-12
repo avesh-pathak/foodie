@@ -181,9 +181,9 @@ class FoodiePalette extends ThemeExtension<FoodiePalette> {
   /// Non-vegetarian marker.
   final Color nonVeg;
 
-  /// Light palette — Zomato's red-on-white identity.
+  /// Light palette — Foodie's red-on-white identity.
   ///
-  /// The brand red is Zomato's `#E23744` deepened by two steps to `#DC2B3B`
+  /// The brand red is Foodie's `#E23744` deepened by two steps to `#DC2B3B`
   /// so a white label on the fill clears 4.5:1 (4.72:1) instead of landing at
   /// 4.32:1. The difference is invisible; the contrast is not.
   static const FoodiePalette light = FoodiePalette(
@@ -233,7 +233,7 @@ class FoodiePalette extends ThemeExtension<FoodiePalette> {
     nonVeg: Color(0xFFA3341F),
   );
 
-  /// Dark palette — Zomato at night: near-black canvas, white ink, the same
+  /// Dark palette — Foodie at night: near-black canvas, white ink, the same
   /// red lifted so it glows against the black instead of sinking into it.
   static const FoodiePalette dark = FoodiePalette(
     background: Color(0xFF0F0F10),
@@ -465,7 +465,7 @@ class FoodieType extends ThemeExtension<FoodieType> {
 
   static const String bodyFamily = 'PlusJakartaSans';
 
-  /// Zomato's identity is all-sans: heavy geometric headlines over the same
+  /// Foodie's identity is all-sans: heavy geometric headlines over the same
   /// grotesque used for body copy. The app ships one family, so display and
   /// body share it and the hierarchy comes from weight and size instead of a
   /// second typeface.
@@ -986,10 +986,10 @@ abstract final class AppTheme {
     );
   }
 
-  /// Zomato light theme — red on white.
+  /// Foodie light theme — red on white.
   static ThemeData get light => build(FoodiePalette.light);
 
-  /// Zomato dark theme — red on near-black, composed for dark surfaces
+  /// Foodie dark theme — red on near-black, composed for dark surfaces
   /// rather than inverted from the light one.
   static ThemeData get dark => build(FoodiePalette.dark);
 }

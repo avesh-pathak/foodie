@@ -210,7 +210,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   }
 }
 
-/// Brand lockup plus the delivery city — the Zomato-style top strip.
+/// Brand lockup plus the delivery city — the Foodie-style top strip.
 class _WelcomeHeader extends StatelessWidget {
   const _WelcomeHeader();
 
@@ -335,7 +335,7 @@ class _HeroCollage extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           Flexible(
-                            // Zomato's signature: a green star badge.
+                            // Foodie's signature: a green star badge.
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 9,
