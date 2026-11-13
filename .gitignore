@@ -16,7 +16,7 @@ Thumbs.db
 .svn/
 .swiftpm/
 migrate_working_dir/
-
+.opencode*
 # IntelliJ / editor related
 *.iml
 *.ipr
