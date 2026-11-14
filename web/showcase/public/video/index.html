@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foodie — 30-second tour</title>
+<style>
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/assets/fonts/PlusJakartaSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/assets/fonts/PlusJakartaSans-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/assets/fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/assets/fonts/PlusJakartaSans-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/assets/fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-display: swap;
+  }
+  :root {
+    --paper: #fff8f4;
+    --card: #fffdfb;
+    --ink: #1c1516;
+    --muted: #6e5f60;
+    --line: #ead8d2;
+    --red: #dc2b3b;
+    --red-deep: #a8121f;
+    --red-soft: #fdebee;
+    --dark: #171112;
+    --dark-2: #211a1c;
+    --dark-ink: #fbf1ed;
+    --dark-muted: #b9a6a4;
+    --dark-line: #3a2c2e;
+    --sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0d090a; }
+  body { font-family: var(--sans); color: var(--ink); }
+
+  .stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .stage__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(28, 21, 22, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(28, 21, 22, 0.045) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at 78% 38%, #000 10%, transparent 72%);
+  }
+  .stage__glow {
+    position: absolute;
+    top: -300px;
+    right: -240px;
+    width: 980px;
+    height: 980px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(220, 43, 59, 0.17), rgba(220, 43, 59, 0) 66%);
+  }
+
+  .topbar {
+    position: absolute;
+    z-index: 30;
+    top: 38px;
+    left: 120px;
+    right: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    animation: topbar 30s linear both;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .brand img { width: 42px; height: 42px; border-radius: 11px; }
+  .brand span {
+    margin-left: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--red-soft);
+    color: var(--red-deep);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 600;
+    animation: topbarRight 30s linear both;
+  }
+  .topbar__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .topbar__sep { width: 1px; height: 14px; background: var(--line); }
+
+  .act {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    padding: 150px 120px 150px;
+    opacity: 0;
+  }
+
+  .act--intro { animation: actIntro 30s linear both; z-index: 10; }
+  .act--customer { animation: actCustomer 30s linear both; }
+  .act--admin { animation: actAdmin 30s linear both; }
+  .act--kitchen { animation: actKitchen 30s linear both; }
+  .act--arch { animation: actArch 30s linear both; padding: 0; }
+  .act--outro { animation: actOutro 30s linear both; padding: 0; z-index: 20; }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1.02fr 0.98fr;
+    align-items: center;
+    gap: 60px;
+    height: 100%;
+  }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    color: var(--red-deep);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .label::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 5px var(--red-soft);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 104px;
+    line-height: 0.93;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+  }
+  h2 {
+    margin: 0;
+    font-size: 72px;
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+  }
+  .accent { color: var(--red); }
+  .intro-sub {
+    max-width: 700px;
+    margin: 30px 0 0;
+    color: var(--muted);
+    font-size: 25px;
+    line-height: 1.5;
+  }
+
+  .bullets {
+    display: grid;
+    gap: 14px;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bullets li {
+    position: relative;
+    padding-left: 30px;
+    color: #3b2e2f;
+    font-size: 23px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .bullets li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 4px var(--red-soft);
+  }
+
+  .caption {
+    position: absolute;
+    left: 120px;
+    bottom: 78px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    max-width: 1240px;
+    color: #3b2e2f;
+    font-size: 30px;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+  .caption::before {
+    content: "";
+    flex: none;
+    width: 5px;
+    height: 42px;
+    margin-top: 2px;
+    border-radius: 99px;
+    background: var(--red);
+  }
+  .caption span { color: var(--red-deep); font-weight: 800; }
+
+  /* intro phones */
+  .intro-art { position: relative; height: 700px; }
+  .mini {
+    position: absolute;
+    padding: 7px;
+    border-radius: 38px;
+    background: var(--dark);
+    box-shadow: 0 32px 60px -24px rgba(70, 8, 14, 0.5);
+    overflow: hidden;
+  }
+  .mini img { width: 100%; height: 100%; object-fit: cover; border-radius: 31px; }
+  .mini--a { width: 255px; height: 552px; left: 40px; top: 70px; transform: rotate(-7deg); z-index: 2; }
+  .mini--b { width: 255px; height: 552px; right: 40px; top: 34px; transform: rotate(6deg); z-index: 1; }
+  .mini--c { width: 280px; height: 606px; left: 50%; bottom: 0; transform: translateX(-50%) rotate(-1deg); z-index: 3; }
+  .mini__tag {
+    position: absolute;
+    top: -1px;
+    left: 18px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    z-index: 4;
+  }
+
+  .ticket-float {
+    position: absolute;
+    left: 0;
+    bottom: 26px;
+    z-index: 6;
+    width: 330px;
+    padding: 16px 18px;
+    border: 1px solid #e8d4c6;
+    border-radius: 5px;
+    background: #fffaf3;
+    box-shadow: 0 26px 50px -22px rgba(70, 8, 14, 0.48);
+    transform: rotate(-4deg);
+    font-size: 13px;
+  }
+  .ticket-float__head {
+    display: flex;
+    justify-content: space-between;
+    margin: -16px -18px 12px;
+    padding: 9px 12px;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ticket-float__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 1px dotted #e2cdbf;
+    color: #6b5852;
+  }
+  .ticket-float__row strong { color: #2a1c1b; }
+  .ticket-float__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 9px;
+    padding-top: 8px;
+    border-top: 1px solid #e8d4c6;
+  }
+  .ticket-float__total strong { font-size: 26px; letter-spacing: -0.04em; }
+  .ticket-float__status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 7px 9px;
+    border-radius: 4px;
+    background: var(--red-soft);
+    color: var(--red-deep);
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .ticket-float__status i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  /* phone stack */
+  .phone-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  .phone-frame {
+    position: relative;
+    width: 386px;
+    height: 836px;
+    padding: 8px;
+    border-radius: 48px;
+    background: var(--dark);
+    box-shadow: 0 44px 90px -34px rgba(70, 8, 14, 0.58);
+    transform: rotate(-1.5deg);
+  }
+  .phone-frame img {
+    position: absolute;
+    inset: 8px;
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    object-fit: cover;
+    border-radius: 40px;
+    opacity: 0;
+  }
+  .phone-tag {
+    position: absolute;
+    z-index: 8;
+    top: -19px;
+    left: 34px;
+    padding: 7px 15px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 20px -12px rgba(60, 20, 20, 0.35);
+  }
+  .float-chip {
+    position: absolute;
+    z-index: 9;
+    right: 10px;
+    bottom: 96px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: 0 18px 36px -20px rgba(60, 20, 20, 0.4);
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .float-chip i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--green, #1e7f38);
+  }
+
+  /* crossfades: customer */
+  .sh-home { animation: shHome 30s linear both; }
+  .sh-menu { animation: shMenu 30s linear both; }
+  .sh-cart { animation: shCart 30s linear both; }
+  .sh-track { animation: shTrack 30s linear both; }
+  /* admin */
+  .sh-an { animation: shAdmin 30s linear both; }
+  .sh-am { animation: shMenuAdmin 30s linear both; }
+  .sh-ao { animation: shOrdersAdmin 30s linear both; }
+  /* kitchen */
+  .sh-ko { animation: shKitchen 30s linear both; }
+  .sh-ka { animation: shAvailable 30s linear both; }
+
+  /* architecture */
+  .arch-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    padding: 150px 82px 110px;
+    background: var(--dark);
+    color: var(--dark-ink);
+  }
+  .arch-panel__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--dark-line);
+  }
+  .arch-panel h2 { color: var(--dark-ink); font-size: 58px; }
+  .arch-panel__note { color: var(--dark-muted); font-size: 19px; }
+  .arch {
+    display: grid;
+    grid-template-columns: 1fr 150px 1.1fr 150px 1fr;
+    align-items: center;
+    gap: 0;
+    margin-top: 30px;
+  }
+  .arch__label {
+    margin: 0 0 10px;
+    color: #8f7c7b;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .arch__col { display: grid; gap: 10px; }
+  .arch-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 16px;
+    border: 1px solid var(--dark-line);
+    border-radius: 13px;
+    background: var(--dark-2);
+  }
+  .arch-node strong { display: block; font-size: 18px; line-height: 1.25; }
+  .arch-node small { display: block; margin-top: 2px; color: var(--dark-muted); font-size: 12.5px; line-height: 1.35; }
+  .arch-dot { flex: none; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%; }
+  .arch-dot--red { background: #ff6b76; }
+  .arch-dot--gold { background: #e0a526; }
+  .arch-dot--green { background: #3fbf6b; }
+  .arch-core {
+    padding: 12px 14px;
+    border: 1px dashed #4a383a;
+    border-radius: 10px;
+    color: var(--dark-muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .arch-core code { display: block; margin-bottom: 2px; color: #ffb3b9; font-family: var(--mono); font-size: 12px; }
+  .arch-api {
+    padding: 20px;
+    border: 1px solid #553b3e;
+    border-radius: 16px;
+    background: #251a1d;
+  }
+  .arch-api strong { display: block; font-size: 23px; }
+  .arch-api small { display: block; margin-top: 3px; color: var(--dark-muted); font-size: 13px; }
+  .route-list {
+    display: grid;
+    gap: 5px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .route-list li {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #332628;
+    color: #ffd9dc;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .route-list span { color: #8f7c7b; }
+  .arch-api__total { margin: 14px 0 0; color: var(--dark-muted); font-size: 12px; }
+  .arch-api__total code { color: #ffb3b9; font-family: var(--mono); }
+
+  .arch__link { position: relative; height: 280px; }
+  .arch__link::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    border-left: 1px dashed #5a4446;
+  }
+  .arch__link span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 0 8px;
+    background: var(--dark);
+    color: #8f7c7b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
+  .packet {
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff6b76;
+    box-shadow: 0 0 16px #ff6b76;
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  .packet--a { animation: packetA 30s linear both; }
+  .packet--b { animation: packetB 30s linear both; }
+  .arch__return {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 26px;
+    padding: 13px 16px;
+    border: 1px dashed #4a383a;
+    border-radius: 10px;
+    color: var(--dark-muted);
+    font-size: 14px;
+  }
+  .arch__return b { color: #ffb3b9; font-weight: 800; }
+  .arch-panel .caption { color: #d9c6c4; bottom: 46px; font-size: 26px; }
+  .arch-panel .caption::before { background: #ff6b76; }
+  .arch-panel .caption span { color: #ffb3b9; }
+
+  /* outro */
+  .outro {
+    position: absolute;
+    inset: 0;
+    background: var(--red-deep);
+    color: var(--paper);
+    padding: 116px 120px 100px;
+    overflow: hidden;
+  }
+  .outro::before {
+    content: "";
+    position: absolute;
+    right: -180px;
+    bottom: -360px;
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 143, 152, 0.25), transparent 64%);
+  }
+  .outro__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 26px;
+    color: #f6c9cc;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .outro h2 {
+    max-width: 1300px;
+    font-family: var(--sans);
+    font-size: 210px;
+    line-height: 0.8;
+    letter-spacing: -0.065em;
+    font-weight: 800;
+  }
+  .outro__line {
+    max-width: 900px;
+    margin: 38px 0 0;
+    color: #ffe2e3;
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .outro__meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 54px;
+    color: #ffd0d3;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .outro__meta i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffd0d3;
+  }
+  .outro__seal {
+    position: absolute;
+    right: 120px;
+    bottom: 118px;
+    width: 210px;
+    height: 210px;
+    border: 2px solid rgba(255, 248, 244, 0.45);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: #fff3f0;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transform: rotate(8deg);
+  }
+  .outro__seal span { display: block; font-size: 26px; letter-spacing: 0; text-transform: none; margin-top: 4px; }
+
+  /* progress */
+  .progress {
+    position: absolute;
+    z-index: 40;
+    right: 120px;
+    bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 360px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: rgba(255, 248, 244, 0.94);
+    box-shadow: 0 10px 26px -16px rgba(0, 0, 0, 0.5);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .progress__track { flex: 1; height: 4px; border-radius: 99px; background: #ead8d2; overflow: hidden; }
+  .progress__fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 99px;
+    background: var(--red);
+    transform-origin: left;
+    animation: progress 30s linear both;
+  }
+
+  /* keyframes */
+  @keyframes topbar {
+    0%, 63.9% { color: var(--ink); border-color: var(--line); }
+    64%, 100% { color: var(--paper); border-color: rgba(255, 248, 244, 0.25); }
+  }
+  @keyframes topbarRight {
+    0%, 63.9% { color: var(--muted); }
+    64%, 100% { color: #ffd9dc; }
+  }
+  @keyframes actIntro {
+    0% { opacity: 1; transform: none; }
+    8.8% { opacity: 1; transform: none; }
+    10%, 100% { opacity: 0; transform: translateY(-18px); }
+  }
+  @keyframes actCustomer {
+    0%, 10% { opacity: 0; transform: translateY(24px); }
+    11.2%, 26.8% { opacity: 1; transform: none; }
+    28%, 100% { opacity: 0; transform: translateY(-18px); }
+  }
+  @keyframes actAdmin {
+    0%, 28% { opacity: 0; transform: translateY(24px); }
+    29.2%, 44.8% { opacity: 1; transform: none; }
+    46%, 100% { opacity: 0; transform: translateY(-18px); }
+  }
+  @keyframes actKitchen {
+    0%, 46% { opacity: 0; transform: translateY(24px); }
+    47.2%, 62.8% { opacity: 1; transform: none; }
+    64%, 100% { opacity: 0; transform: translateY(-18px); }
+  }
+  @keyframes actArch {
+    0%, 64% { opacity: 0; }
+    65.2%, 82.8% { opacity: 1; }
+    84%, 100% { opacity: 0; }
+  }
+  @keyframes actOutro {
+    0%, 84% { opacity: 0; }
+    85.2%, 100% { opacity: 1; }
+  }
+
+  @keyframes shHome {
+    0%, 11% { opacity: 0; }
+    12%, 15.5% { opacity: 1; }
+    16.5%, 100% { opacity: 0; }
+  }
+  @keyframes shMenu {
+    0%, 16.5% { opacity: 0; }
+    17.5%, 20.5% { opacity: 1; }
+    21.5%, 100% { opacity: 0; }
+  }
+  @keyframes shCart {
+    0%, 21.5% { opacity: 0; }
+    22.5%, 24.5% { opacity: 1; }
+    25.5%, 100% { opacity: 0; }
+  }
+  @keyframes shTrack {
+    0%, 25.5% { opacity: 0; }
+    26.5%, 28% { opacity: 1; }
+    29%, 100% { opacity: 0; }
+  }
+  @keyframes shAdmin {
+    0%, 28.5% { opacity: 0; }
+    29.8%, 35% { opacity: 1; }
+    36%, 100% { opacity: 0; }
+  }
+  @keyframes shMenuAdmin {
+    0%, 36% { opacity: 0; }
+    37%, 40.5% { opacity: 1; }
+    41.5%, 100% { opacity: 0; }
+  }
+  @keyframes shOrdersAdmin {
+    0%, 41.5% { opacity: 0; }
+    42.5%, 45.5% { opacity: 1; }
+    46.5%, 100% { opacity: 0; }
+  }
+  @keyframes shKitchen {
+    0%, 47.5% { opacity: 0; }
+    48.8%, 54.5% { opacity: 1; }
+    55.5%, 100% { opacity: 0; }
+  }
+  @keyframes shAvailable {
+    0%, 55.5% { opacity: 0; }
+    56.8%, 63% { opacity: 1; }
+    64%, 100% { opacity: 0; }
+  }
+
+  @keyframes packetA {
+    0%, 65% { top: 0; opacity: 0; }
+    66% { top: 0; opacity: 1; }
+    74% { top: 270px; opacity: 1; }
+    75%, 100% { top: 270px; opacity: 0; }
+  }
+  @keyframes packetB {
+    0%, 67% { top: 0; opacity: 0; }
+    68% { top: 0; opacity: 1; }
+    76% { top: 270px; opacity: 1; }
+    77%, 100% { top: 270px; opacity: 0; }
+  }
+
+  @keyframes progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="stage__grid"></div>
+  <div class="stage__glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="/favicon.svg" alt="">
+      Foodie <span>30-second tour</span>
+    </div>
+    <div class="topbar__right">
+      <span class="topbar__dot"></span> Flutter · Hono · Neon
+      <span class="topbar__sep"></span>
+      Silent · captions
+    </div>
+  </header>
+
+  <!-- intro -->
+  <section class="act act--intro">
+    <div class="split">
+      <div>
+        <p class="label">A restaurant-ordering build</p>
+        <h1>One restaurant<br>Three apps<br><span class="accent">One live system</span></h1>
+        <p class="intro-sub">Customers order, admins run the menu, the kitchen cooks from a live board. All three on one Hono API and Neon Postgres.</p>
+      </div>
+      <div class="intro-art">
+        <div class="mini mini--a"><span class="mini__tag">Admin</span><img src="/assets/img/screens/admin-analytics.webp" alt=""></div>
+        <div class="mini mini--b"><span class="mini__tag">Kitchen</span><img src="/assets/img/screens/kitchen-orders.webp" alt=""></div>
+        <div class="mini mini--c"><span class="mini__tag">Customer</span><img src="/assets/img/screens/home.webp" alt=""></div>
+        <div class="ticket-float">
+          <div class="ticket-float__head"><span>Foodie</span><span>Service ticket</span></div>
+          <div class="ticket-float__row"><span>Order</span><strong>FD15784803</strong></div>
+          <div class="ticket-float__row"><span>Table</span><strong>Demo · 2 items</strong></div>
+          <div class="ticket-float__row"><span>Restaurant</span><strong>Hyderabadi House</strong></div>
+          <div class="ticket-float__total"><span>Total</span><strong>₹578</strong></div>
+          <div class="ticket-float__status"><i></i> Out for delivery <span style="margin-left:auto;color:#8a5b5f">16 min</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="caption">One restaurant. Three apps. One live system.</p>
+  </section>
+
+  <!-- customer -->
+  <section class="act act--customer">
+    <div class="split">
+      <div>
+        <p class="label">Customer app</p>
+        <h2>Order it. Then<br>watch it arrive.</h2>
+        <ul class="bullets">
+          <li>6 restaurants and 28 dishes</li>
+          <li>A live bill with coupons and GST</li>
+          <li>Six-step demo tracking</li>
+        </ul>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <span class="phone-tag">Customer</span>
+          <img class="sh-home" src="/assets/img/screens/home.webp" alt="">
+          <img class="sh-menu" src="/assets/img/screens/menu.webp" alt="">
+          <img class="sh-cart" src="/assets/img/screens/cart.webp" alt="">
+          <img class="sh-track" src="/assets/img/screens/tracking.webp" alt="">
+        </div>
+        <div class="float-chip"><i></i> 6 restaurants · 28 dishes</div>
+      </div>
+    </div>
+    <p class="caption">Browse 6 restaurants and 28 dishes, then track a demo delivery.</p>
+  </section>
+
+  <!-- admin -->
+  <section class="act act--admin">
+    <div class="split">
+      <div>
+        <p class="label">Admin app</p>
+        <h2>Run the menu.<br>Read the numbers.</h2>
+        <ul class="bullets">
+          <li>Menus, prices and photos</li>
+          <li>Orders and prep-time metrics</li>
+          <li>9 analytics endpoints</li>
+        </ul>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <span class="phone-tag">Admin</span>
+          <img class="sh-an" src="/assets/img/screens/admin-analytics.webp" alt="">
+          <img class="sh-am" src="/assets/img/screens/admin-menu.webp" alt="">
+          <img class="sh-ao" src="/assets/img/screens/admin-orders.webp" alt="">
+        </div>
+        <div class="float-chip"><i style="background:#b8860b"></i> 9 analytics endpoints</div>
+      </div>
+    </div>
+    <p class="caption">Run menus, prices, orders and analytics.</p>
+  </section>
+
+  <!-- kitchen -->
+  <section class="act act--kitchen">
+    <div class="split">
+      <div>
+        <p class="label">Kitchen app</p>
+        <h2>Cook from the pass.<br>Mark it ready.</h2>
+        <ul class="bullets">
+          <li>Confirmed → preparing → ready</li>
+          <li>Green, amber and red prep timers</li>
+          <li>Sold-out toggles reach the menu</li>
+        </ul>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <span class="phone-tag">Kitchen</span>
+          <img class="sh-ko" src="/assets/img/screens/kitchen-orders.webp" alt="">
+          <img class="sh-ka" src="/assets/img/screens/kitchen-availability.webp" alt="">
+        </div>
+        <div class="float-chip"><i></i> Live prep timers</div>
+      </div>
+    </div>
+    <p class="caption">Cook from a live board with prep timers.</p>
+  </section>
+
+  <!-- architecture -->
+  <section class="act act--arch">
+    <div class="arch-panel">
+      <div class="arch-panel__head">
+        <h2>One API. One source of truth.</h2>
+        <p class="arch-panel__note">Flutter clients → Hono → Neon</p>
+      </div>
+
+      <div class="arch">
+        <div>
+          <p class="arch__label">Clients</p>
+          <div class="arch__col">
+            <div class="arch-node"><span class="arch-dot arch-dot--red"></span><div><strong>Customer</strong><small>Demo data + REST refresh</small></div></div>
+            <div class="arch-node"><span class="arch-dot arch-dot--gold"></span><div><strong>Admin</strong><small>Menus, orders, analytics</small></div></div>
+            <div class="arch-node"><span class="arch-dot arch-dot--green"></span><div><strong>Kitchen</strong><small>Live board + SSE</small></div></div>
+            <div class="arch-core"><code>packages/foodie_core</code>Shared models + API client</div>
+          </div>
+        </div>
+
+        <div class="arch__link">
+          <span>HTTPS</span>
+          <i class="packet packet--a"></i>
+        </div>
+
+        <div>
+          <p class="arch__label">API</p>
+          <div class="arch-api">
+            <strong>Hono on Node</strong>
+            <small>Bearer-token writes · CORS · SSE</small>
+            <ul class="route-list">
+              <li>/auth <span>2</span></li>
+              <li>/restaurants <span>5</span></li>
+              <li>/menu <span>5</span></li>
+              <li>/orders <span>4</span></li>
+              <li>/analytics <span>9</span></li>
+              <li>/images <span>3</span></li>
+            </ul>
+            <p class="arch-api__total">28 REST routes + <code>/events</code></p>
+          </div>
+        </div>
+
+        <div class="arch__link">
+          <span>Drizzle</span>
+          <i class="packet packet--b"></i>
+        </div>
+
+        <div>
+          <p class="arch__label">Neon</p>
+          <div class="arch__col">
+            <div class="arch-node"><div><strong>Postgres</strong><small>12 tables · system of record</small></div></div>
+            <div class="arch-node"><div><strong>Object Storage</strong><small>Presigned uploads</small></div></div>
+            <div class="arch-node"><div><strong>Realtime</strong><small>restaurants · menu_items · orders</small></div></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="arch__return"><b>SSE /events</b> changes flow back to the customer app and the kitchen board.</p>
+      <p class="caption">One Hono API. Neon Postgres, storage and realtime.</p>
+    </div>
+  </section>
+
+  <!-- outro -->
+  <section class="act act--outro">
+    <div class="outro">
+      <p class="outro__eyebrow">Foodie · 2026</p>
+      <h2>Foodie</h2>
+      <p class="outro__line">Three apps. One live system.</p>
+      <p class="outro__meta">Built with Flutter, Hono and Neon <i></i> 3 apps <i></i> 30 seconds</p>
+      <div class="outro__seal">Restaurant<br>ordering<span>End to end</span></div>
+    </div>
+  </section>
+
+  <div class="progress">
+    <span>30s tour</span>
+    <span class="progress__track"><span class="progress__fill"></span></span>
+  </div>
+</div>
+
+<script>
+  // Preview only. The renderer loads the stage at exactly 1920 × 1080, so this
+  // branch never runs during a render.
+  (() => {
+    if (window.innerWidth >= 1920 && window.innerHeight >= 1080) return;
+    const stage = document.getElementById('stage');
+    const fit = () => {
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      stage.style.transformOrigin = 'top left';
+      stage.style.transform = `scale(${scale})`;
+      stage.style.marginLeft = `${(window.innerWidth - 1920 * scale) / 2}px`;
+      stage.style.marginTop = `${(window.innerHeight - 1080 * scale) / 2}px`;
+    };
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</body>
+</html>
