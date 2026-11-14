@@ -73,6 +73,8 @@ skills-lock.json
 # Reports and idea notes (keep README.md and CREDITS.md)
 *.html
 !web/index.html
+!web/showcase/public/video/index.html
+!web/showcase/tools/og.html
 *report*.md
 *Report*.md
 idea*.md

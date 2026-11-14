@@ -1,12 +1,46 @@
 # Foodie — Restaurant Ordering Platform
 
-Three apps, one Neon-backed API:
+Three Flutter apps on one Neon-backed API — **not** a standalone Flutter-only app:
 
 - **[Customer app](#customer-app)** — browse, order and track (Flutter, repo root).
 - **[Admin app](#admin-app)** — restaurants, menus, prices, orders and analytics (`admin/`).
 - **[Kitchen app](#kitchen-app)** — live order board, prep timers and item availability (`kitchen/`).
+- **API** — Hono on Node, Drizzle ORM over Neon Postgres, Neon Realtime over SSE and
+  S3-compatible Neon Object Storage for dish photos (`server/`).
 
-A complete, polished Flutter restaurant ordering MVP built with Material 3. The customer app ships with realistic demo data; the admin and kitchen apps read and write the same Neon Postgres database through the Hono API in `server/`.
+All three apps talk to the same API, so a menu edit in admin or a sold-out toggle in
+kitchen reaches the customer app without a rebuild. The customer app keeps bundled
+demo data as an offline fallback.
+
+## Architecture
+
+| Piece | Located in | Stack | Backend surface it uses |
+| --- | --- | --- | --- |
+| Customer app | repo root (`lib/`) | Flutter, Material 3 | `GET /restaurants`, `GET /menu`, SSE `/events`, `POST /orders` |
+| Admin app | `admin/` | Flutter + `fl_chart` | restaurants, menu, images, orders, analytics |
+| Kitchen app | `kitchen/` | Flutter | order board, status writes, item availability |
+| Shared Dart package | `packages/foodie_core/` | Dart + `http` | models and API client used by admin and kitchen |
+| API | `server/` | Hono on Node, Drizzle ORM, Zod | Neon Postgres, Neon Realtime, S3-compatible object storage |
+
+The API lives in `server/src/`:
+
+- `routes/restaurants.ts`, `routes/menu.ts` — catalogue reads and writes.
+- `routes/orders.ts` — order placement, status transitions, kitchen board.
+- `routes/analytics.ts` — revenue, AOV, peak hours and area breakdowns.
+- `routes/images.ts` — presigned uploads and a read-through proxy for dish photos.
+- `routes/auth.ts` — demo admin/kitchen credentials.
+- `realtime.ts` — Neon Realtime subscription; `GET /events` streams changes to
+  every connected app over SSE.
+
+## Showcase site
+
+A Next.js showcase lives in [`web/showcase/`](web/showcase/). It presents the three apps, eight selected screens, the architecture and the 30-second tour, with an all-screens route at `/screens`.
+
+```bash
+cd web/showcase
+npm install
+npm run dev -- -p 3000
+```
 
 <table align="center">
   <tr>
@@ -52,7 +86,10 @@ A complete, polished Flutter restaurant ordering MVP built with Material 3. The 
 - **Support** with an FAQ accordion, quick topics and a local simulated chat assistant.
 - **Responsive layouts**, SafeArea support, keyboard-aware forms, accessible 44 px tap targets and graceful image fallbacks.
 
-All activity is in memory and resets whenever the app restarts.
+Restaurants, menus, item availability and placed orders come from the API. Cart,
+favorites, addresses and the session are held in memory and reset when the app
+restarts or you log out. If the API is unreachable the app says so and falls back
+to the bundled demo catalogue.
 
 ## Admin app
 
@@ -172,10 +209,61 @@ flutter run
 
 ### Run the customer app
 
+The customer app reads its catalogue from the API (`http://localhost:3001` on web,
+`http://10.0.2.2:3001` on the Android emulator) and posts orders to it. Start the
+API first, then run the app:
+
 ```bash
 flutter pub get
 flutter run
 ```
+
+Override the API host for a physical device or a deployed API:
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://your-api.example.com
+```
+
+With no reachable API the app opens a connection screen offering **Try again** and
+**Continue with saved menu**.
+
+## API (`server/`)
+
+The backend is a TypeScript Hono app served by Node, with Drizzle ORM over Neon
+Postgres, Neon Realtime for change fan-out and S3-compatible Neon Object Storage for
+dish photos.
+
+`server/.env` supplies:
+
+```text
+DATABASE_URL              # Neon pooled connection
+DATABASE_URL_UNPOOLED     # direct connection for schema push and seed
+NEON_REALTIME_URL         # wss://... Neon Realtime endpoint
+AWS_ENDPOINT_URL_S3       # Neon Object Storage endpoint
+```
+
+```bash
+cd server
+npm install
+npm run db:push          # apply the Drizzle schema
+npm run db:seed          # restaurants, menus, coupons, demo users
+npm run db:seed:orders   # sample orders for analytics
+npm run dev              # http://localhost:3001
+```
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Liveness check |
+| `GET`/`POST`/`PUT`/`DELETE` | `/restaurants`, `/restaurants/:id` | Restaurant catalogue |
+| `GET`/`POST`/`PUT`/`DELETE` | `/menu`, `/menu/:id` | Menu items, prices, availability |
+| `GET`/`POST`/`PUT` | `/orders`, `/orders/:id/status` | Order placement and kitchen status writes |
+| `GET` | `/analytics/*` | Overview, by-area, by-restaurant, top dishes, peak hours, weekdays, month, prep time, daily summary |
+| `POST` | `/images/presign` | Presigned PUT URL for an admin photo upload |
+| `POST` | `/images/upload` | Base64 relay upload when the storage host is unreachable |
+| `GET` | `/images/object?key=` | Public read-through proxy for a stored photo |
+| `POST` | `/auth/login` | Demo admin and kitchen sign-in |
+| `GET` | `/auth/me` | Current session |
+| `GET` | `/events` | SSE stream of Neon Realtime changes consumed by all three apps |
 
 ## Screenshots
 
@@ -289,10 +377,13 @@ Every screen below is captured from this build at a 390 × 844 phone viewport. T
 
 - Flutter **3.50.0+ stable**
 - Dart **3.14.0+** (bundled with Flutter)
+- Node **20+** for the API in `server/`
 - Android SDK 36 + JDK 21 for Android builds
 - This deliverable is an **Android phone build only**; the iOS host folder remains in the Flutter project but is not part of the APK.
 
-The app has **no third-party runtime packages** — just Flutter and Dart.
+Runtime packages are deliberately minimal: `http` for API calls and the SSE stream
+in all three apps, plus `fl_chart` and `image_picker` in the admin and kitchen apps.
+There is no state-management, routing or UI-kit dependency.
 
 ## Run the app
 
@@ -387,20 +478,21 @@ Three historical sample orders are included so History is populated on first lau
 food/
 ├── android/                    # Android host project (customer app)
 ├── ios/                        # iOS host project
-├── web/                        # Browser preview target
+├── web/                        # Flutter web host + Next.js showcase (web/showcase/)
 ├── admin/                      # Separate Flutter admin app
 ├── kitchen/                    # Separate Flutter kitchen app
-├── server/                     # Hono API + Neon Postgres
-├── packages/foodie_core/       # Shared Dart API client + models
-├── docs/screenshots/           # Screenshots used in this README
+├── server/                     # Hono API: Drizzle + Neon Postgres, Realtime, Storage
+├── packages/foodie_core/       # Models + API client used by admin and kitchen
+├── docs/                       # Screenshots, ADRs and working notes
+├── tool/                       # Deterministic test runner (tool/test.ps1)
 ├── assets/
 │   ├── brand/app_icon.png      # Source app icon artwork
 │   ├── fonts/                  # Bundled Plus Jakarta Sans + Fraunces
 │   └── images/                 # Bundled restaurant and dish photography
 ├── lib/
-│   ├── main.dart               # Entry point, system UI styling
-│   ├── app.dart                # MaterialApp, theme, state scope
-│   ├── data/mock_data.dart     # Restaurants, dishes, coupons, riders, FAQs, seed orders
+│   ├── main.dart               # Entry point: starts ApiSync, system UI styling
+│   ├── app.dart                # MaterialApp, theme, state scope, offline gate
+│   ├── data/mock_data.dart     # Seed catalogue + offline fallback, coupons, riders, FAQs
 │   ├── models/                 # Food, restaurant, cart, address and order models
 │   ├── screens/
 │   │   ├── welcome_screen.dart
@@ -419,7 +511,11 @@ food/
 │   │   ├── addresses_screen.dart
 │   │   ├── offers_screen.dart
 │   │   ├── support_screen.dart
-│   │   └── settings_screen.dart
+│   │   ├── settings_screen.dart
+│   │   └── connection_error_screen.dart  # API unreachable: retry or use saved menu
+│   ├── services/
+│   │   ├── api_sync.dart       # Catalogue refresh + SSE /events subscription
+│   │   └── orders_api.dart     # POST /orders at checkout
 │   ├── state/
 │   │   ├── foodie_app_state.dart  # Single ChangeNotifier source of truth
 │   │   └── foodie_scope.dart      # InheritedNotifier access
@@ -437,6 +533,14 @@ food/
 ## State management
 
 `FoodieAppState` is a `ChangeNotifier` exposed through `FoodieScope` (an `InheritedNotifier`). It owns the session, addresses, cart, favorites, applied coupon, payment choice, orders and settings. Screens depend on it directly, so cart badges, favorites, order status and totals update immediately throughout the app.
+
+Server data flows through `lib/services/`:
+
+- `ApiSync` fetches `/restaurants` and `/menu`, replaces the `MockData` catalogue and
+  subscribes to `/events`; every Neon Realtime change triggers a refresh and
+  `FoodieAppState` rebuilds from it.
+- `OrdersApi` posts the order and its line items to `/orders` at checkout. Checkout
+  still completes if that request fails.
 
 Calculations:
 
@@ -494,9 +598,24 @@ WCAG 2.2 contrast formula (4.5:1 for text, 3:1 for control boundaries).
 ## Verification
 
 ```bash
+# Customer app
 flutter analyze
 flutter test
 flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
+
+# Admin and kitchen apps
+(cd admin && flutter analyze)
+(cd kitchen && flutter analyze)
+
+# API
+cd server && npm run build
+```
+
+The API also exposes `GET /health`, which returns `{ "ok": true }` without touching
+the database, for a quick check that the server is up:
+
+```bash
+curl http://localhost:3001/health
 ```
 
 On Windows, `flutter test` can exit with a `PathNotFoundException` while
@@ -521,13 +640,16 @@ Project-scoped skills live in `.agents/skills` (lockfile: `skills-lock.json`) an
 
 ## Limitations
 
-- Customer, admin and kitchen apps share one Neon Postgres database but there
-  is no real authentication beyond the demo credentials.
-- No persistence beyond the database: customer app state resets on restart/logout.
+- Three apps and one API share a single Neon Postgres database. Authentication is
+  demo-only: `admin` / `password123` and `kitchen` / `password123` are seeded
+  plaintext users, and the customer app accepts any name.
+- Restaurants, menus, availability and placed orders persist in Postgres. Customer
+  cart, favorites, addresses and session live in memory and reset on restart/logout.
 - Payment methods are simulations and never collect real card/UPI data.
 - Tracking is a designed demo, not real GPS or a maps integration.
-- No push notifications (in-app alerts only).
-- Tracking is a designed demo, not real GPS or a maps integration.
-- No push notifications, backend, analytics or external APIs.
+- No push notifications: new-order alerts are in-app and, in the kitchen app, a
+  local sound and vibration.
+- Analytics are derived from seeded and newly placed orders, not a production event
+  pipeline.
 
 See [CREDITS.md](CREDITS.md) for photography and font attributions.
