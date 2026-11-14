@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foodie — Open Graph</title>
+<style>
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../public/assets/fonts/PlusJakartaSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../public/assets/fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../public/assets/fonts/PlusJakartaSans-Bold.ttf") format("truetype");
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("../public/assets/fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #fff8f4;
+    color: #1c1516;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+
+  .stage { position: relative; width: 1200px; height: 630px; overflow: hidden; }
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(28, 21, 22, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(28, 21, 22, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at 82% 42%, #000 12%, transparent 74%);
+  }
+  .glow {
+    position: absolute;
+    top: -220px;
+    right: -180px;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(220, 43, 59, 0.2), rgba(220, 43, 59, 0) 66%);
+  }
+
+  header {
+    position: absolute;
+    top: 42px;
+    left: 64px;
+    right: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ead8d2;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 25px; font-weight: 800; letter-spacing: -0.03em; }
+  .brand img { width: 38px; height: 38px; border-radius: 10px; }
+  .brand span {
+    margin-left: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #fdebee;
+    color: #a8121f;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  header p { margin: 0; color: #6e5f60; font-size: 13px; font-weight: 600; }
+
+  main { position: absolute; top: 146px; left: 64px; width: 690px; }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 14px;
+    color: #a8121f;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc2b3b;
+    box-shadow: 0 0 0 4px #fdebee;
+  }
+  h1 {
+    margin: 0;
+    font-size: 77px;
+    line-height: 0.92;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+  }
+  h1 span { color: #dc2b3b; }
+  .sub {
+    max-width: 560px;
+    margin: 20px 0 0;
+    color: #6e5f60;
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .phones { position: absolute; right: 52px; bottom: 82px; width: 400px; height: 350px; }
+  .mini {
+    position: absolute;
+    padding: 5px;
+    border-radius: 26px;
+    background: #171112;
+    box-shadow: 0 24px 50px -20px rgba(70, 8, 14, 0.5);
+    overflow: hidden;
+  }
+  .mini img { width: 100%; height: 100%; object-fit: cover; border-radius: 21px; }
+  .mini--a { width: 134px; height: 290px; left: 12px; top: 34px; transform: rotate(-8deg); }
+  .mini--b { width: 134px; height: 290px; right: 12px; top: 18px; transform: rotate(7deg); }
+  .mini--c { width: 148px; height: 322px; left: 50%; top: 2px; transform: translateX(-50%) rotate(-1deg); z-index: 3; }
+
+  footer {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    bottom: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #ead8d2;
+    color: #6e5f60;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  footer b { color: #dc2b3b; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="grid"></div>
+    <div class="glow"></div>
+
+    <header>
+      <div class="brand">
+        <img src="../public/favicon.svg" alt="">
+        Foodie <span>showcase</span>
+      </div>
+      <p>Flutter · Hono · Neon</p>
+    </header>
+
+    <main>
+      <p class="eyebrow">Restaurant ordering, end to end</p>
+      <h1>One restaurant.<br>Three apps.<br><span>One live system.</span></h1>
+      <p class="sub">A Flutter customer app, admin console and kitchen board on one Hono + Neon Postgres backend.</p>
+    </main>
+
+    <div class="phones">
+      <div class="mini mini--a"><img src="../public/assets/img/screens/admin-analytics.webp" alt=""></div>
+      <div class="mini mini--b"><img src="../public/assets/img/screens/kitchen-orders.webp" alt=""></div>
+      <div class="mini mini--c"><img src="../public/assets/img/screens/home.webp" alt=""></div>
+    </div>
+
+    <footer>
+      <span><b>Selected screens</b> from the build</span>
+      <span>30-second tour · 28 REST routes + SSE</span>
+    </footer>
+  </div>
+</body>
+</html>
